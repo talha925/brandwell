@@ -6,7 +6,7 @@ return(
 
 
 <div className=" ">
-        <h3 className="text-xl text-center font-semibold ">Free Online Coupons and Promo Codes for the Store You Love!</h3>
+        <h3 className="text-xl text-center font-semibold ">Free Online Coupons and Promo Codes for the Store You Love</h3>
         <div className=" flex justify-evenly"></div>
             <Image src="/image/amazon.com.png" alt="Amazon"width={400} height={500} className="w-56 md:w-56 sm:w-4 h-auto md:ml-80 ml-20 mt-20 rounded-full-md  p-2.5 outline outline-offset-2 outline-gray-100" />
        

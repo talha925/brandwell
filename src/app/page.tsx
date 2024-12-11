@@ -30,7 +30,7 @@ export default function Blogs() {
   };
 
   return (
-    <div className="container mx-auto m-0">
+    <div className="container ">
       <section className="p-0">
         <div className="relative text-3xl font-bold text-start mb-18 pb-10">
           <button
@@ -39,7 +39,7 @@ export default function Blogs() {
           >
             ❮
           </button>
-          <div className="w-screen md:w-scree h-full md:h-full relative">
+          <div className="w-screen md:w-screen sm:w-screeen h-full md:h-full relative ml-1 md:ml-4 sm:ml-9 md:mr-4">
             <div className="opacity-100 transition-opacity duration-500">
               <Image
                 src={images[currentSlide]}
@@ -69,27 +69,27 @@ export default function Blogs() {
       </section>
 
       <section className="p-8">
-        <h2 className="text-3xl font-bold text-start mb-7r ">Browse Categories</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-          <div className="relative bg-blue-50 shadow-md rounded-md overflow-hidden hover:shadow-sm transition-shadow  ">
+        <h2 className="text-3xl font-bold text-start mb-7r md:ml-4 sm:ml-7">Browse Categories</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2  gap-6">
+          <div className="relative bg-blue-50 md:ml-4 shadow-md rounded-md  overflow-hidden hover:shadow-sm transition-shadow  ">
     
 
 <Image
   src="/image/travel1.jpg"
   alt="Travel Image"
   layout="intrinsic"
-  width={500}
+  width={800}
   height={300}
 />
 
             <h1 className="p-10 text-black font-bold text-3xl">Travel</h1>
           </div>
 
-          <div className="relative bg-blue-50 shadow-md rounded-md overflow-hidden hover:shadow-lg transition-shadow mb-3">
+          <div className="relative bg-blue-50 shadow-md rounded-md overflow-hidden  hover:shadow-lg  transition-shadow mb-3">
             <Image
               src="/image/health1.jpg"
               alt="Health"
-              width={700}
+              width={800}
               height={450}
               className="rounded shadow-md"
             />
@@ -111,7 +111,7 @@ export default function Blogs() {
             <Image
               src="/image/header_image_Article_Main-The_Many_Health_and_Beauty_Benefits_of_Castor_Oil-300x169.png"
               alt="Health and Fitness"
-              width={700}
+              width={800}
               height={450}
               className="rounded shadow-md"
             />
@@ -121,15 +121,15 @@ export default function Blogs() {
       </section>
 
       <section>
-        <h2 className="text-black font-bold text-3xl mb-8 text-start pt-6">Featured Blogs</h2>
+        <h2 className="text-black font-bold text-3xl mb-8 text-start pt-6 ml-3">Featured Blogs</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="relative bg-transparent shadow-md rounded-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div className="relative bg-transparent shadow-md ml-3 mr-3 rounded-md overflow-hidden hover:shadow-lg transition-shadow">
             <Image
               src="/image/app.png"
               alt="App"
-              width={700}
+              width={800}
               height={450}
-              className="rounded shadow-md"
+              className="rounded shadow-md md:w-screen sm:w-56 "
             />
             <h1 className="p-10 text-black text-3xl">Best Practices for Preserving Your Smart Appliances Performance</h1>
           </div>
@@ -138,7 +138,7 @@ export default function Blogs() {
             <Image
               src="/image/home-(3).png"
               alt="Home"
-              width={700}
+              width={800}
               height={450}
               className="rounded shadow-md"
             />
@@ -149,7 +149,7 @@ export default function Blogs() {
             <Image
               src="/image/bali.png"
               alt="Bali"
-              width={900}
+              width={800}
               height={450}
             />
             <h1 className="p-10 text-black text-3xl">Why Smart Homes Are the Future: Discover the Advantages of IoT</h1>
@@ -216,7 +216,7 @@ export default function Blogs() {
           </div>
         </div>
       </section>
-      <footer className="bg-black text-white py-4">
+      <footer className="bg-black text-white py-4 ">
       <div className="container mx-auto px-4 text-center" >
    
         <div className="flex justify-center  mb-44 space-x-4">

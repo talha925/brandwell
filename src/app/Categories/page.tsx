@@ -1,6 +1,6 @@
 import { FaHeart, FaCar, FaBaby, FaBrush, FaLaptop, FaHome } from "react-icons/fa"; 
 import { GiLipstick, GiShirt, GiPawHeart, GiCakeSlice, GiFlashlight } from "react-icons/gi";
-import Link from 'next/link';  // Import Link from Next.js
+import Link from 'next/link';  
 
 export default function Categories() {
   const categories = [
@@ -44,7 +44,7 @@ export default function Categories() {
       </div>
 
    
-      <footer className="bg-black text-white w-screen max-h-96 flex flex-col justify-between pb-6">
+      <footer className="bg-black text-white w-screen max-h-96 w-flex flex-col justify-between pb-6">
       
         <div className="flex-grow px-4 flex flex-col items-center justify-center my-9">
   
@@ -83,7 +83,7 @@ export default function Categories() {
             </a>
           </div>
 
-          {/* Footer Links */}
+      
           <ul className="flex flex-wrap justify-center space-x-6 text-sm my-6">
             <li><a href="#" className="hover:underline">About Us</a></li>
             <li><a href="#" className="hover:underline">Privacy Policy</a></li>

@@ -10,9 +10,9 @@ export default function Header() {
 
 
   return (
-    <header className="bg-white text-sm flex flex-col md:flex-row items-center md:justify-between sm:flex-row-items-center sm:justify-between p-1 md:p-1  sm-p-0 space-y-2 md:space-y-0">
+    <header className="bg-white text-sm overflow-x-hidden flex flex-col md:flex-row items-center md:justify-between sm:flex-row-items-center sm:justify-between p-1 md:p-1  sm-p-0 space-y-2 md:space-y-0">
 
-      <div className="flex items-center md:-gap-0  sm:gap-0 ml-8">
+      <div className="flex items-center md:-gap-5  sm:-gap-0 ml-8">
         <Image
           src="/image/Logo-ATT.png"
           alt="logo"
@@ -87,8 +87,6 @@ export default function Header() {
      COUPONS
       </Link>
     </nav>
-
-   
       <div className="flex flex-1 ">
         <input
           type="text"
@@ -104,75 +102,3 @@ export default function Header() {
 
 
 
-// "use client";
-
-// import Image from "next/image";
-// import Link from "next/link";
-// import { Menu } from "lucide-react";
-// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
-// export default function Header() {
-//   return (
-//     <header className="bg-white text-sm flex flex-col md:flex-row items-center md:justify-between sm:flex-row-items-center sm:justify-between p-1 md:p-1 sm-p-0 space-y-2 md:space-y-0">
-//       {/* Logo and Brand Name */}
-//       <div className="flex items-center md:gap-1 ml-28">
-//         <Image
-//           src="/image/Logo-ATT.png"
-//           alt="logo"
-//           width={100}
-//           height={50}
-//           className="w-full md:w-36 h-auto p-4 md:gap-7 sm:gap-1"
-//         />
-//         <h1 className="text-3xl bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent font-bold mr-60 md:mr-4 sm:ml-2">
-//           BRANDWELL
-//         </h1>
-//       </div>
-
-//       {/* Desktop Navigation */}
-//       <nav className="hidden md:flex gap-4 items-center mr-44 text-xl">
-//         <Link href="/" className="hover:text-orange-500">
-//           HOME
-//         </Link>
-//         <Link href="/Categories" className="hover:text-orange-500">
-//           CATEGORIES
-//         </Link>
-//         <Link href="/Coupons" className="hover:text-orange-500">
-//           COUPONS
-//         </Link>
-//       </nav>
-
-//       {/* Mobile Navigation (Sheet Component) */}
-//       <div className="block md:hidden">
-//         <Sheet>
-//           <SheetTrigger asChild>
-//             <button className="p-2">
-//               <Menu />
-//             </button>
-//           </SheetTrigger>
-//           <SheetContent>
-//             <ul className="space-y-4">
-//               <li className="hover:text-orange-500">
-//                 <Link href="/">HOME</Link>
-//               </li>
-//               <li className="hover:text-orange-500">
-//                 <Link href="/Categories">CATEGORIES</Link>
-//               </li>
-//               <li className="hover:text-orange-500">
-//                 <Link href="/Coupons">COUPONS</Link>
-//               </li>
-//             </ul>
-//           </SheetContent>
-//         </Sheet>
-//       </div>
-
-//       {/* Search Input */}
-//       <div className="md:flex flex-1 ml-4">
-//         <input
-//           type="text"
-//           placeholder="Find Coupons & Stores"
-//           className="border rounded-lg px-4 py-3 w-96"
-//         />
-//       </div>
-//     </header>
-//   );
-// }
