@@ -36,7 +36,7 @@ export default function Categories() {
             key={index}
           
              className="flex flex-col items-center justify-center bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition">
-              <div className="text-2xl mb-2 text-orange-500">{category.icon}</div>
+              <div className="text-2xl mb-2 text-blue-500">{category.icon}</div>
               <span className="text-sm font-medium">{category.name}</span>
            
           </Link>

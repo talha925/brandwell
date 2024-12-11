@@ -8,18 +8,18 @@ return(
 <div className=" ">
         <h3 className="text-xl text-center font-semibold ">Free Online Coupons and Promo Codes for the Store You Love!</h3>
         <div className=" flex justify-evenly"></div>
-            <Image src="/image/amazon.com.png" alt="Amazon"width={400} height={500} className="w-56 h-auto ml-48 mt-20 rounded-full-md p-2.5 outline outline-offset-2 outline-gray-100" />
+            <Image src="/image/amazon.com.png" alt="Amazon"width={400} height={500} className="w-56 md:w-56 sm:w-4 h-auto md:ml-80 ml-20 mt-20 rounded-full-md  p-2.5 outline outline-offset-2 outline-gray-100" />
        
             
           </div>
 
 <section className="mb-20">
-  <h3 className="text-xl font-semibold mb-7 ml-44">Today&apos;s Most Popular Coupons & Deals</h3>
+  <h3 className="text-xl font-semibold mb-7 md:ml-44 ml-3  sm:ml-4">Today&apos;s Most Popular Coupons & Deals</h3>
   
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-9 mx-auto max-w-7xl">
 
 
-<div className="bg-white border p-4 rounded-lg shadow-lg ">
+<div className="bg-white border p-4 rounded-lg shadow-lg md:rounded md:shadow">
 
 <p className="text-sm text-green-500 font-medium mb-2 ml-20">Verified <span className="text-gray-500">•udemy</span></p>
 <h4 className="text-lg font-semibold mb-2 ml-20">
@@ -32,7 +32,7 @@ Udemy
 Fill Your Cart with Career-changing Skills
 </p>
 <p className="text-sm text-gray-500 mb-4 ml-20">Ends in 8 days</p>
-<button className="bg-blue-600 text-white py-2 px-6 ml-80 md:rounded-lg hover:bg-blue-700 transition duration-200">
+<button className="bg-blue-600 text-white py-2 px-6 ml-56 md:ml-80 md:rounded-lg hover:bg-blue-700 transition duration-200">
 Get deal
 </button>
 </div>
@@ -47,7 +47,7 @@ Up to 50% Off Sitewide + Extra 20% Off All Orders
 • HOTEL COLLECTION
 </h1>
 <p className="text-gray-600 text-sm mb-4"></p>
-<button className="bg-blue-600 text-white py-2 px-6  ml-80 rounded-lg hover:bg-blue-700 md:transition duration-200">
+<button className="bg-blue-600 text-white py-2 px-6  ml-56 md:ml-80 rounded-lg hover:bg-blue-700 md:transition duration-200">
 Get code
 </button>
 </div>
@@ -61,7 +61,7 @@ Up to 50% Off Sitewide + Extra 20% Off All Orders
 AROMA360
 </h1>
 <p className="text-gray-600 text-sm mb-4"></p>
-<button className="bg-blue-600 text-white py-2 px-6 ml-80 rounded-lg hover:bg-blue-700 transition duration-200">
+<button className="bg-blue-600 text-white py-2 px-6 ml-56 md:ml-80 rounded-lg hover:bg-blue-700 transition duration-200">
 Get code
 </button>
 </div>
@@ -79,7 +79,7 @@ Aquasana
 </h1>
 <p className="text-gray-600 text-sm mb-4"></p>
 <p className="text-sm text-gray-500 mb-4 nl-20">Ends tomorrow</p>
-<button className="bg-blue-600 text-white py-2 px-6 ml-80 rounded-lg hover:bg-blue-700 transition duration-200">
+<button className="bg-blue-600 text-white py-2 px-6 ml-56 md:ml-80 rounded-lg hover:bg-blue-700 transition duration-200">
 Get deal
 </button>
 </div>
@@ -97,7 +97,7 @@ SUNSPEL
 Including Best-selling Classic T-shirts & Riviera Polo Shirts
 </p>
 <p className="text-sm text-gray-500 mb-4">Ends in 1 month</p>
-<button className="bg-blue-600 text-white py-2 px-6 ml-80 rounded-lg hover:bg-blue-700 transition duration-200">
+<button className="bg-blue-600 text-white py-2 px-6 ml-56 md:ml-80 rounded-lg hover:bg-blue-700 transition duration-200">
 Get deal
 </button>
 </div>
@@ -112,7 +112,7 @@ Newegg
 </h1>
 <p className="text-gray-600 text-sm mb-4"></p>
 <p className="text-sm text-gray-500 mb-4 ml-20">Ends in 5 days</p>
-<button className="bg-blue-600 text-white py-2 px-6 ml-80 rounded-lg hover:bg-blue-700 transition duration-200">
+<button className="bg-blue-600 text-white py-2 px-6 ml-56 md:ml-80 rounded-lg hover:bg-blue-700 transition duration-200">
 Get deal
 </button>
 </div>
