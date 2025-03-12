@@ -1105,7 +1105,67 @@ export default function Home() {
           throw new Error(`Error: ${res.status}`);
         }
         const jsonData = await res.json();
-        setCoupons(jsonData.data);
+
+        // Hardcoded Coupons
+        const newCoupons: Coupon[] = [
+          {
+            _id: "67bb9753524643e1351ab1f8",
+            name: "Hello Heading Check",
+            image: {
+              url: "https://coupon-app-image.s3.us-east-1.amazonaws.com/7a24c8eb-bc81-41cb-9935-3cb8e773a693-2672266.jpg",
+              alt: "Hello Heading Check Best Deals Logo"
+            },
+            directUrl: "https://coupon-app-backend.vercel.app/api/stores",
+            trackingUrl: "https://coupon-app-backend.vercel.app/api/stores",
+            short_description: "asdas",
+            long_description: "dasdasd",
+            categories: [],
+            language: "English",
+            isTopStore: false,
+            isEditorsChoice: false,
+            heading: "Voucher & Discount Codes",
+            createdAt: "2025-02-23T21:46:59.120Z",
+            updatedAt: "2025-02-23T21:46:59.120Z",
+            seo: {
+              meta_title: "HeadingHeadingHeadingHeading",
+              meta_description: "HeadingHeadingHeading",
+              meta_keywords: "HeadingHeading"
+            },
+            coupons: [],
+            slug: "hello-heading-check",
+            __v: 0
+          },
+          {
+            _id: "67bba162524643e1351ab1fe",
+            name: "Top Store Check",
+            image: {
+              url: "https://coupon-app-image.s3.us-east-1.amazonaws.com/f8f8a7c1-18e1-4497-92d0-8554e59976fd-NICHE.png",
+              alt: "Top Store Check Best Deals Logo"
+            },
+            directUrl: "https://coupon-app-backend.vercel.app/api/stores",
+            trackingUrl: "https://coupon-app-backend.vercel.app/api/stores",
+            short_description: "Top Store Check",
+            long_description: "Top Store Check",
+            categories: [],
+            language: "English",
+            isTopStore: false,
+            isEditorsChoice: false,
+            heading: "Promo Codes & Coupon",
+            createdAt: "2025-02-23T22:29:54.330Z",
+            updatedAt: "2025-02-23T22:29:54.330Z",
+            seo: {
+              meta_title: "Top Store Check",
+              meta_description: "Top Store Check",
+              meta_keywords: "Top Store Check"
+            },
+            coupons: [],
+            slug: "top-store-check",
+            __v: 0
+          }
+        ];
+
+        // ✅ Fix: API se aaye hue aur hardcoded coupons merge karke set kar rahe hain
+        setCoupons([...jsonData.data, ...newCoupons]);
       } catch (err) {
         setError("Failed to fetch coupons. Please try again later.");
         console.error(err);
@@ -1115,68 +1175,6 @@ export default function Home() {
     }
 
     fetchCoupons();
-
-    // Hardcoded Coupons
-    const newCoupons: Coupon[] = [
-      {
-        _id: "67bb9753524643e1351ab1f8",
-        name: "Hello Heading Check",
-        image: {
-          url: "https://coupon-app-image.s3.us-east-1.amazonaws.com/7a24c8eb-bc81-41cb-9935-3cb8e773a693-2672266.jpg",
-          alt: "Hello Heading Check Best Deals Logo"
-        },
-        directUrl: "https://coupon-app-backend.vercel.app/api/stores",
-        trackingUrl: "https://coupon-app-backend.vercel.app/api/stores",
-        short_description: "asdas",
-        long_description: "dasdasd",
-        categories: [],
-        language: "English",
-        isTopStore: false,
-        isEditorsChoice: false,
-        heading: "Voucher & Discount Codes",
-        createdAt: "2025-02-23T21:46:59.120Z",
-        updatedAt: "2025-02-23T21:46:59.120Z",
-        seo: {
-          meta_title: "HeadingHeadingHeadingHeading",
-          meta_description: "HeadingHeadingHeading",
-          meta_keywords: "HeadingHeading"
-        },
-        coupons: [],
-        slug: "hello-heading-check",
-        __v: 0
-      },
-      {
-        _id: "67bba162524643e1351ab1fe",
-        name: "Top Store Check",
-        image: {
-          url: "https://coupon-app-image.s3.us-east-1.amazonaws.com/f8f8a7c1-18e1-4497-92d0-8554e59976fd-NICHE.png",
-          alt: "Top Store Check Best Deals Logo"
-        },
-        directUrl: "https://coupon-app-backend.vercel.app/api/stores",
-        trackingUrl: "https://coupon-app-backend.vercel.app/api/stores",
-        short_description: "Top Store Check",
-        long_description: "Top Store Check",
-        categories: [],
-        language: "English",
-        isTopStore: false,
-        isEditorsChoice: false,
-        heading: "Promo Codes & Coupon",
-        createdAt: "2025-02-23T22:29:54.330Z",
-        updatedAt: "2025-02-23T22:29:54.330Z",
-        seo: {
-          meta_title: "Top Store Check",
-          meta_description: "Top Store Check",
-          meta_keywords: "Top Store Check"
-        },
-        coupons: [],
-        slug: "top-store-check",
-        __v: 0
-      }
-    ];
-
-    // API Coupons + Hardcoded Coupons Merge
-    setCoupons((prevCoupons) => [...prevCoupons, ...newCoupons]);
-
   }, []);
 
   return (
