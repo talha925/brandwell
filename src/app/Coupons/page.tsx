@@ -747,6 +747,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image"; // ✅ Import next/image for optimization
 
 interface StoreImage {
   url: string;
@@ -779,9 +780,9 @@ interface Coupon {
 }
 
 const CouponsList = () => {
-  const [coupons, setCoupons] = useState<Coupon[]>([]); // Empty array at first
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchCoupons = async () => {
@@ -790,12 +791,12 @@ const CouponsList = () => {
         const result = await response.json();
 
         if (result.status === "success" && Array.isArray(result.data)) {
-          // No filtering, show all coupons from the API
-          setCoupons(result.data);  // Display all coupons
+          setCoupons(result.data);
         } else {
           setError("Invalid response format");
         }
       } catch (err) {
+        console.error("Error fetching coupons:", err); // ✅ Log error for debugging
         setError("Failed to fetch coupons");
       } finally {
         setLoading(false);
@@ -814,11 +815,13 @@ const CouponsList = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {coupons.map((coupon) => (
-          <div key={coupon._id} className="border rounded-lg shadow-md p-4">
+          <div key={coupon._id} className="border rounded-lg shadow-md p-4 bg-white">
             <div className="flex items-center">
-              <img
+              <Image
                 src={coupon.store.image.url}
                 alt={coupon.store.image.alt}
+                width={48} // ✅ Define width & height for performance
+                height={48}
                 className="w-12 h-12 mr-3 rounded-full"
               />
               <div>
@@ -826,11 +829,14 @@ const CouponsList = () => {
                 <p className="text-sm text-gray-500">{coupon.offerDetails}</p>
               </div>
             </div>
+
             <p className="mt-2 text-green-600 font-bold text-lg">{coupon.offerBox}</p>
+
             <p className="mt-1 text-gray-600">
               Code:{" "}
               <span className="font-mono bg-gray-200 px-2 py-1 rounded">{coupon.code}</span>
             </p>
+
             <p className="text-red-500 text-sm mt-2">
               Expires on: {new Date(coupon.expirationDate).toDateString()}
             </p>
