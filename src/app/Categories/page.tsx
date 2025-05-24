@@ -1059,183 +1059,238 @@
 
 
 
-'use client';
+// 'use client';
 
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 
-// TypeScript Type
-type Coupon = {
+// // TypeScript Type
+// type Coupon = {
+//   _id: string;
+//   name: string;
+//   image: {
+//     url: string;
+//     alt: string;
+//   };
+//   directUrl: string;
+//   trackingUrl: string;
+//   short_description: string;
+//   long_description: string;
+//   categories: string[];
+//   language: string;
+//   isTopStore: boolean;
+//   isEditorsChoice: boolean;
+//   heading: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   seo: {
+//     meta_title: string;
+//     meta_description: string;
+//     meta_keywords: string;
+//   };
+//   coupons: string[];
+//   slug: string;
+//   __v: number;
+// };
+
+// export default function Home() {
+//   const [coupons, setCoupons] = useState<Coupon[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     async function fetchCoupons() {
+//       try {
+//         const res = await fetch("https://coupon-app-backend.vercel.app/api/stores");
+//         if (!res.ok) {
+//           throw new Error(`Error: ${res.status}`);
+//         }
+//         const jsonData = await res.json();
+
+//         // Hardcoded Coupons
+//         const newCoupons: Coupon[] = [
+//           {
+//             _id: "67bb9753524643e1351ab1f8",
+//             name: "Hello Heading Check",
+//             image: {
+//               url: "https://coupon-app-image.s3.us-east-1.amazonaws.com/7a24c8eb-bc81-41cb-9935-3cb8e773a693-2672266.jpg",
+//               alt: "Hello Heading Check Best Deals Logo"
+//             },
+//             directUrl: "https://coupon-app-backend.vercel.app/api/stores",
+//             trackingUrl: "https://coupon-app-backend.vercel.app/api/stores",
+//             short_description: "asdas",
+//             long_description: "dasdasd",
+//             categories: [],
+//             language: "English",
+//             isTopStore: false,
+//             isEditorsChoice: false,
+//             heading: "Voucher & Discount Codes",
+//             createdAt: "2025-02-23T21:46:59.120Z",
+//             updatedAt: "2025-02-23T21:46:59.120Z",
+//             seo: {
+//               meta_title: "HeadingHeadingHeadingHeading",
+//               meta_description: "HeadingHeadingHeading",
+//               meta_keywords: "HeadingHeading"
+//             },
+//             coupons: [],
+//             slug: "hello-heading-check",
+//             __v: 0
+//           },
+//           {
+//             _id: "67bba162524643e1351ab1fe",
+//             name: "Top Store Check",
+//             image: {
+//               url: "https://coupon-app-image.s3.us-east-1.amazonaws.com/f8f8a7c1-18e1-4497-92d0-8554e59976fd-NICHE.png",
+//               alt: "Top Store Check Best Deals Logo"
+//             },
+//             directUrl: "https://coupon-app-backend.vercel.app/api/stores",
+//             trackingUrl: "https://coupon-app-backend.vercel.app/api/stores",
+//             short_description: "Top Store Check",
+//             long_description: "Top Store Check",
+//             categories: [],
+//             language: "English",
+//             isTopStore: false,
+//             isEditorsChoice: false,
+//             heading: "Promo Codes & Coupon",
+//             createdAt: "2025-02-23T22:29:54.330Z",
+//             updatedAt: "2025-02-23T22:29:54.330Z",
+//             seo: {
+//               meta_title: "Top Store Check",
+//               meta_description: "Top Store Check",
+//               meta_keywords: "Top Store Check"
+//             },
+//             coupons: [],
+//             slug: "top-store-check",
+//             __v: 0
+//           }
+//         ];
+
+//         // ✅ Fix: API se aaye hue aur hardcoded coupons merge karke set kar rahe hain
+//         setCoupons([...jsonData.data, ...newCoupons]);
+//       } catch (err) {
+//         setError("Failed to fetch coupons. Please try again later.");
+//         console.error(err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     }
+
+//     fetchCoupons();
+//   }, []);
+
+//   return (
+//     <div className="min-h-screen bg-gray-50 p-8">
+//       <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">
+//         🔥 Best Coupon Deals
+//       </h1>
+
+//       {loading && <p className="text-center text-gray-500">Loading coupons...</p>}
+//       {error && <p className="text-red-500 text-center">{error}</p>}
+
+//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+//         {coupons.map((coupon) => (
+//           <div 
+//             key={coupon._id} 
+//             className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl"
+//           >
+//             <img 
+//               src={coupon.image.url} 
+//               alt={coupon.image.alt} 
+//               className="w-full h-48 object-cover"
+//             />
+//             <div className="p-5">
+//               <h2 className="text-2xl font-semibold text-gray-800">{coupon.name}</h2>
+//               <p className="text-gray-500 mb-3">{coupon.short_description}</p>
+
+//               <div className="flex items-center justify-between mt-4">
+//                 <span 
+//                   className={`px-3 py-1 text-sm font-semibold rounded-lg ${coupon.isTopStore ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-600'}`}
+//                 >
+//                   {coupon.isTopStore ? "🏆 Top Store" : "Regular Store"}
+//                 </span>
+//                 <span 
+//                   className={`px-3 py-1 text-sm font-semibold rounded-lg ${coupon.isEditorsChoice ? 'bg-blue-100 text-blue-600' : 'bg-gray-200 text-gray-600'}`}
+//                 >
+//                   {coupon.isEditorsChoice ? "✨ Editor's Choice" : "Standard"}
+//                 </span>
+//               </div>
+
+//               <div className="mt-6 flex space-x-3">
+//                 <a 
+//                   href={coupon.directUrl} 
+//                   target="_blank" 
+//                   rel="noopener noreferrer"
+//                   className="flex-1 text-center bg-orange-500 text-white font-bold py-2 rounded-lg transition hover:bg-orange-600"
+//                 >
+//                   Redeem Offer
+//                 </a>
+//                 <a 
+//                   href={coupon.trackingUrl} 
+//                   target="_blank" 
+//                   rel="noopener noreferrer"
+//                   className="flex-1 text-center bg-gray-800 text-white font-bold py-2 rounded-lg transition hover:bg-gray-900"
+//                 >
+//                   Track Offer
+//                 </a>
+//               </div>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+"use client";
+import React, { useEffect, useState } from "react";
+
+type Category = {
   _id: string;
   name: string;
-  image: {
-    url: string;
-    alt: string;
-  };
-  directUrl: string;
-  trackingUrl: string;
-  short_description: string;
-  long_description: string;
-  categories: string[];
-  language: string;
-  isTopStore: boolean;
-  isEditorsChoice: boolean;
-  heading: string;
-  createdAt: string;
-  updatedAt: string;
-  seo: {
-    meta_title: string;
-    meta_description: string;
-    meta_keywords: string;
-  };
-  coupons: string[];
-  slug: string;
-  __v: number;
 };
 
-export default function Home() {
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const CategoriesDropdown = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   useEffect(() => {
-    async function fetchCoupons() {
-      try {
-        const res = await fetch("https://coupon-app-backend.vercel.app/api/stores");
-        if (!res.ok) {
-          throw new Error(`Error: ${res.status}`);
+    fetch("https://coupon-app-backend.vercel.app/api/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success" && Array.isArray(data.data.categories)) {
+          setCategories(data.data.categories);
         }
-        const jsonData = await res.json();
-
-        // Hardcoded Coupons
-        const newCoupons: Coupon[] = [
-          {
-            _id: "67bb9753524643e1351ab1f8",
-            name: "Hello Heading Check",
-            image: {
-              url: "https://coupon-app-image.s3.us-east-1.amazonaws.com/7a24c8eb-bc81-41cb-9935-3cb8e773a693-2672266.jpg",
-              alt: "Hello Heading Check Best Deals Logo"
-            },
-            directUrl: "https://coupon-app-backend.vercel.app/api/stores",
-            trackingUrl: "https://coupon-app-backend.vercel.app/api/stores",
-            short_description: "asdas",
-            long_description: "dasdasd",
-            categories: [],
-            language: "English",
-            isTopStore: false,
-            isEditorsChoice: false,
-            heading: "Voucher & Discount Codes",
-            createdAt: "2025-02-23T21:46:59.120Z",
-            updatedAt: "2025-02-23T21:46:59.120Z",
-            seo: {
-              meta_title: "HeadingHeadingHeadingHeading",
-              meta_description: "HeadingHeadingHeading",
-              meta_keywords: "HeadingHeading"
-            },
-            coupons: [],
-            slug: "hello-heading-check",
-            __v: 0
-          },
-          {
-            _id: "67bba162524643e1351ab1fe",
-            name: "Top Store Check",
-            image: {
-              url: "https://coupon-app-image.s3.us-east-1.amazonaws.com/f8f8a7c1-18e1-4497-92d0-8554e59976fd-NICHE.png",
-              alt: "Top Store Check Best Deals Logo"
-            },
-            directUrl: "https://coupon-app-backend.vercel.app/api/stores",
-            trackingUrl: "https://coupon-app-backend.vercel.app/api/stores",
-            short_description: "Top Store Check",
-            long_description: "Top Store Check",
-            categories: [],
-            language: "English",
-            isTopStore: false,
-            isEditorsChoice: false,
-            heading: "Promo Codes & Coupon",
-            createdAt: "2025-02-23T22:29:54.330Z",
-            updatedAt: "2025-02-23T22:29:54.330Z",
-            seo: {
-              meta_title: "Top Store Check",
-              meta_description: "Top Store Check",
-              meta_keywords: "Top Store Check"
-            },
-            coupons: [],
-            slug: "top-store-check",
-            __v: 0
-          }
-        ];
-
-        // ✅ Fix: API se aaye hue aur hardcoded coupons merge karke set kar rahe hain
-        setCoupons([...jsonData.data, ...newCoupons]);
-      } catch (err) {
-        setError("Failed to fetch coupons. Please try again later.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchCoupons();
+      })
+      .catch((err) => console.error("Failed to fetch categories:", err));
   }, []);
 
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value);
+    console.log("Selected category ID:", e.target.value);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8">
-        🔥 Best Coupon Deals
-      </h1>
-
-      {loading && <p className="text-center text-gray-500">Loading coupons...</p>}
-      {error && <p className="text-red-500 text-center">{error}</p>}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {coupons.map((coupon) => (
-          <div 
-            key={coupon._id} 
-            className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl"
-          >
-            <img 
-              src={coupon.image.url} 
-              alt={coupon.image.alt} 
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-5">
-              <h2 className="text-2xl font-semibold text-gray-800">{coupon.name}</h2>
-              <p className="text-gray-500 mb-3">{coupon.short_description}</p>
-
-              <div className="flex items-center justify-between mt-4">
-                <span 
-                  className={`px-3 py-1 text-sm font-semibold rounded-lg ${coupon.isTopStore ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-600'}`}
-                >
-                  {coupon.isTopStore ? "🏆 Top Store" : "Regular Store"}
-                </span>
-                <span 
-                  className={`px-3 py-1 text-sm font-semibold rounded-lg ${coupon.isEditorsChoice ? 'bg-blue-100 text-blue-600' : 'bg-gray-200 text-gray-600'}`}
-                >
-                  {coupon.isEditorsChoice ? "✨ Editor's Choice" : "Standard"}
-                </span>
-              </div>
-
-              <div className="mt-6 flex space-x-3">
-                <a 
-                  href={coupon.directUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex-1 text-center bg-orange-500 text-white font-bold py-2 rounded-lg transition hover:bg-orange-600"
-                >
-                  Redeem Offer
-                </a>
-                <a 
-                  href={coupon.trackingUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex-1 text-center bg-gray-800 text-white font-bold py-2 rounded-lg transition hover:bg-gray-900"
-                >
-                  Track Offer
-                </a>
-              </div>
-            </div>
-          </div>
+    <div className="max-w-md mx-auto p-4">
+      <label htmlFor="categories" className="block mb-2 font-semibold">
+        Select Category
+      </label>
+      <select
+        id="categories"
+        value={selectedCategory}
+        onChange={handleChange}
+        className="w-full p-2 border rounded-md"
+      >
+        <option value="">All Categories</option>
+        {categories.map((cat) => (
+          <option key={cat._id} value={cat._id}>
+            {cat.name}
+          </option>
         ))}
-      </div>
+      </select>
     </div>
   );
-}
+};
+
+export default CategoriesDropdown;

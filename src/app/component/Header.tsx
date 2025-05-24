@@ -39,12 +39,15 @@ export default function Header() {
                 <Link href="Categories">CATEGORIES</Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
-                <Link href="Coupons">Coupons</Link>
+                <Link href="stores">STORES</Link>
               </li>
+              {/* <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
+                <Link href="Coupons">COUPONS</Link>
+              </li> */}
             </ul>
           </SheetContent>
         </Sheet>
-      <nav className="hidden gap-4 items-center mr-44 md:flex space-x-3 sm:flex-space-x-1 list-none text-xl">
+      <nav className="hidden gap-4 items-center mr-44 md:flex space-x-3 sm:flex-space-x-1 list-none text-sm">
         <Link href="/" className="hover:text-orange-500">
            HOME
         </Link>
@@ -77,15 +80,20 @@ export default function Header() {
                   </Link>
                 </li>
               ))} */}
-             <div className="relative">
+             <div className="relative ">
         <Link href="Categories" className="hover:text-orange-500 ">
     CATEGORIES
           </Link>
       </div>
 
-      <Link href="Coupons" className="hover:text-orange-500 ">
+ <div className="relative">
+        <Link href="stores" className="hover:text-orange-500 ">
+    STORES
+          </Link>
+      </div>
+      {/* <Link href="Coupons" className="hover:text-orange-500 ">
      COUPONS
-      </Link>
+      </Link> */}
     </nav>
       <div className="flex flex-1 ">
         <input

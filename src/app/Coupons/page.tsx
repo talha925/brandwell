@@ -744,127 +744,263 @@
 
 
 
-"use client";
+// "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image"; // ✅ Import next/image for optimization
+// import { useState, useEffect } from "react";
+// import Image from "next/image"; // ✅ Import next/image for optimization
 
-interface StoreImage {
-  url: string;
-  alt: string;
-}
+// interface StoreImage {
+//   url: string;
+//   alt: string;
+// }
 
-interface Store {
-  _id: string;
-  name: string;
-  image: StoreImage;
-  directUrl: string;
-  trackingUrl: string;
-}
+// interface Store {
+//   _id: string;
+//   name: string;
+//   image: StoreImage;
+//   directUrl: string;
+//   trackingUrl: string;
+// }
 
-interface Coupon {
-  _id: string;
-  offerName: string;
-  offerBox: string;
-  offerDetails: string;
-  code: string;
-  discount: number;
-  expirationDate: string;
-  active: boolean;
-  featuredForHome: boolean;
-  flickerButton: boolean;
-  verifiedButton: boolean;
-  exclusiveButton: boolean;
-  store: Store;
-  image: string;
-}
+// interface Coupon {
+//   _id: string;
+//   offerName: string;
+//   offerBox: string;
+//   offerDetails: string;
+//   code: string;
+//   discount: number;
+//   expirationDate: string;
+//   active: boolean;
+//   featuredForHome: boolean;
+//   flickerButton: boolean;
+//   verifiedButton: boolean;
+//   exclusiveButton: boolean;
+//   store: Store;
+//   image: string;
+// }
 
-const CouponsList = () => {
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+// const CouponsList = () => {
+//   const [coupons, setCoupons] = useState<Coupon[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    const fetchCoupons = async () => {
-      try {
-        const response = await fetch("https://coupon-app-backend.vercel.app/api/coupons");
-        const result = await response.json();
+//   useEffect(() => {
+//     const fetchCoupons = async () => {
+//       try {
+//         const response = await fetch("https://coupon-app-backend.vercel.app/api/coupons");
+//         const result = await response.json();
 
-        if (result.status === "success" && Array.isArray(result.data)) {
-          setCoupons(result.data);
-        } else {
-          setError("Invalid response format");
-        }
-      } catch (err) {
-        console.error("Error fetching coupons:", err); // ✅ Log error for debugging
-        setError("Failed to fetch coupons");
-      } finally {
-        setLoading(false);
-      }
-    };
+//         if (result.status === "success" && Array.isArray(result.data)) {
+//           setCoupons(result.data);
+//         } else {
+//           setError("Invalid response format");
+//         }
+//       } catch (err) {
+//         console.error("Error fetching coupons:", err); // ✅ Log error for debugging
+//         setError("Failed to fetch coupons");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
 
-    fetchCoupons();
-  }, []);
+//     fetchCoupons();
+//   }, []);
 
-  return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-6 text-center">Coupons List</h2>
+//   return (
+//     <div className="max-w-4xl mx-auto p-4">
+//       <h2 className="text-2xl font-bold mb-6 text-center">Coupons List</h2>
 
-      {loading && <p className="text-center text-gray-500">Loading...</p>}
-      {error && <p className="text-center text-red-500">{error}</p>}
+//       {loading && <p className="text-center text-gray-500">Loading...</p>}
+//       {error && <p className="text-center text-red-500">{error}</p>}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {coupons.map((coupon) => (
-          <div key={coupon._id} className="border rounded-lg shadow-md p-4 bg-white">
-            <div className="flex items-center">
-              <Image
-                src={coupon.store.image.url}
-                alt={coupon.store.image.alt}
-                width={48} // ✅ Define width & height for performance
-                height={48}
-                className="w-12 h-12 mr-3 rounded-full"
-              />
-              <div>
-                <h3 className="text-lg font-semibold">{coupon.offerName}</h3>
-                <p className="text-sm text-gray-500">{coupon.offerDetails}</p>
-              </div>
-            </div>
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//         {coupons.map((coupon) => (
+//           <div key={coupon._id} className="border rounded-lg shadow-md p-4 bg-white">
+//             <div className="flex items-center">
+//               <Image
+//                 src={coupon.store.image.url}
+//                 alt={coupon.store.image.alt}
+//                 width={48} // ✅ Define width & height for performance
+//                 height={48}
+//                 className="w-12 h-12 mr-3 rounded-full"
+//               />
+//               <div>
+//                 <h3 className="text-lg font-semibold">{coupon.offerName}</h3>
+//                 <p className="text-sm text-gray-500">{coupon.offerDetails}</p>
+//               </div>
+//             </div>
 
-            <p className="mt-2 text-green-600 font-bold text-lg">{coupon.offerBox}</p>
+//             <p className="mt-2 text-green-600 font-bold text-lg">{coupon.offerBox}</p>
 
-            <p className="mt-1 text-gray-600">
-              Code:{" "}
-              <span className="font-mono bg-gray-200 px-2 py-1 rounded">{coupon.code}</span>
-            </p>
+//             <p className="mt-1 text-gray-600">
+//               Code:{" "}
+//               <span className="font-mono bg-gray-200 px-2 py-1 rounded">{coupon.code}</span>
+//             </p>
 
-            <p className="text-red-500 text-sm mt-2">
-              Expires on: {new Date(coupon.expirationDate).toDateString()}
-            </p>
+//             <p className="text-red-500 text-sm mt-2">
+//               Expires on: {new Date(coupon.expirationDate).toDateString()}
+//             </p>
 
-            {/* Buttons for Tracking URL and Direct URL */}
-            <div className="mt-4 flex flex-col gap-2">
-              <a
-                href={coupon.store.trackingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 text-center bg-gray-800 text-white font-bold py-2 rounded-lg transition hover:bg-gray-900"
-              >
-                Get Deal
-              </a>
-              <a
-                href={coupon.store.directUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 text-center bg-orange-500 text-white font-bold py-2 rounded-lg transition hover:bg-orange-600"
-              >
-                Visit Store
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+//             {/* Buttons for Tracking URL and Direct URL */}
+//             <div className="mt-4 flex flex-col gap-2">
+//               <a
+//                 href={coupon.store.trackingUrl}
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//                 className="flex-1 text-center bg-gray-800 text-white font-bold py-2 rounded-lg transition hover:bg-gray-900"
+//               >
+//                 Get Deal
+//               </a>
+//               <a
+//                 href={coupon.store.directUrl}
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//                 className="flex-1 text-center bg-orange-500 text-white font-bold py-2 rounded-lg transition hover:bg-orange-600"
+//               >
+//                 Visit Store
+//               </a>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
 
-export default CouponsList;
+// export default CouponsList;
+
+
+
+// "use client";
+
+// import { useEffect, useState } from "react";
+// import Image from "next/image";
+
+// interface StoreImage {
+//   url: string;
+//   alt: string;
+// }
+
+// interface Store {
+//   _id: string;
+//   name: string;
+//   image: StoreImage;
+//   directUrl?: string;
+//   trackingUrl?: string;
+// }
+
+// interface Coupon {
+//   _id: string;
+//   offerName: string;
+//   offerBox: string;
+//   offerDetails: string;
+//   code: string;
+//   discount: number;
+//   expirationDate: string;
+//   active: boolean;
+//   featuredForHome: boolean;
+//   flickerButton: boolean;
+//   verifiedButton: boolean;
+//   exclusiveButton: boolean;
+//   store?: Store;
+//   image: string;
+// }
+
+// const CouponsList = () => {
+//   const [coupons, setCoupons] = useState<Coupon[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
+
+//   useEffect(() => {
+//     const fetchCoupons = async () => {
+//       try {
+//         const res = await fetch("https://coupon-app-backend.vercel.app/api/coupons");
+//         const result = await res.json();
+
+//         if (result.status === "success" && Array.isArray(result.data)) {
+//           setCoupons(result.data);
+//         } else {
+//           setError("Invalid response format.");
+//         }
+//       } catch (err) {
+//         console.error("Fetch error:", err);
+//         setError("Failed to fetch coupons.");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchCoupons();
+//   }, []);
+
+//   return (
+//     <div className="max-w-5xl mx-auto px-4 py-6">
+//       <h2 className="text-2xl font-bold text-center mb-6">✨ Latest Coupons</h2>
+
+//       {loading && <p className="text-center text-gray-500">Loading coupons...</p>}
+//       {error && <p className="text-center text-red-500">{error}</p>}
+
+//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+//         {coupons.map((coupon) => (
+//           <div
+//             key={coupon._id}
+//             className="bg-white rounded-xl shadow-md p-4 transition hover:shadow-lg"
+//           >
+//             <div className="flex items-center gap-3 mb-3">
+//               <Image
+//                 src={coupon.store?.image?.url || "/placeholder.png"}
+//                 alt={coupon.store?.image?.alt || "Store"}
+//                 width={50}
+//                 height={50}
+//                 className="rounded-full object-cover"
+//               />
+//               <div>
+//                 <h3 className="text-md font-bold">{coupon.offerName}</h3>
+//                 <p className="text-xs text-gray-500">{coupon.store?.name}</p>
+//               </div>
+//             </div>
+
+//             <p className="text-green-700 font-semibold text-sm mb-2">{coupon.offerBox}</p>
+
+//             <p className="text-sm text-gray-700 mb-1">
+//               Code:{" "}
+//               <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded font-mono">
+//                 {coupon.code}
+//               </span>
+//             </p>
+
+//             <p className="text-xs text-red-500">
+//               Expires: {new Date(coupon.expirationDate).toDateString()}
+//             </p>
+
+//             <div className="mt-4 flex flex-col gap-2">
+//               {coupon.store?.trackingUrl && (
+//                 <a
+//                   href={coupon.store.trackingUrl}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   className="bg-gray-800 text-white text-center py-2 rounded-lg hover:bg-gray-900 text-sm"
+//                 >
+//                   Get Deal
+//                 </a>
+//               )}
+
+//               {coupon.store?.directUrl && (
+//                 <a
+//                   href={coupon.store.directUrl}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   className="bg-orange-500 text-white text-center py-2 rounded-lg hover:bg-orange-600 text-sm"
+//                 >
+//                   Visit Store
+//                 </a>
+//               )}
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CouponsList;
