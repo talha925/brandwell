@@ -101,6 +101,7 @@
 
 
 "use client";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 type Coupon = {
@@ -154,11 +155,13 @@ const CouponsPage = () => {
           key={store._id}
           className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 p-5"
         >
-          <img
-            src={store.image.url}
-            alt={store.image.alt}
-            className="w-full h-40 object-contain mb-4 rounded-xl"
-          />
+          <Image
+  src={store.image.url}
+  alt="Store Image"
+  width={100}   // specify width in pixels
+  height={100}  // specify height in pixels
+/>
+
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-bold text-gray-800">{store.name}</h2>
             <a
