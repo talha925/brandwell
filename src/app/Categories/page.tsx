@@ -1243,6 +1243,61 @@
 
 
 
+// "use client";
+// import React, { useEffect, useState } from "react";
+
+// type Category = {
+//   _id: string;
+//   name: string;
+// };
+
+// const CategoriesDropdown = () => {
+//   const [categories, setCategories] = useState<Category[]>([]);
+//   const [selectedCategory, setSelectedCategory] = useState<string>("");
+
+//   useEffect(() => {
+//     fetch("https://coupon-app-backend.vercel.app/api/categories")
+//       .then((res) => res.json())
+//       .then((data) => {
+//         if (data.status === "success" && Array.isArray(data.data.categories)) {
+//           setCategories(data.data.categories);
+//         }
+//       })
+//       .catch((err) => console.error("Failed to fetch categories:", err));
+//   }, []);
+
+//   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+//     setSelectedCategory(e.target.value);
+//     console.log("Selected category ID:", e.target.value);
+//   };
+
+//   return (
+//     <div className="max-w-md mx-auto p-4">
+//       <label htmlFor="categories" className="block mb-2 font-semibold">
+//         Select Category
+//       </label>
+//       <select
+//         id="categories"
+//         value={selectedCategory}
+//         onChange={handleChange}
+//         className="w-full p-2 border rounded-md"
+//       >
+//         <option value="">All Categories</option>
+//         {categories.map((cat) => (
+//           <option key={cat._id} value={cat._id}>
+//             {cat.name}
+//           </option>
+//         ))}
+//       </select>
+//     </div>
+//   );
+// };
+
+// export default CategoriesDropdown;
+
+
+
+
 "use client";
 import React, { useEffect, useState } from "react";
 
@@ -1251,46 +1306,38 @@ type Category = {
   name: string;
 };
 
-const CategoriesDropdown = () => {
+const CategoriesCards = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   useEffect(() => {
     fetch("https://coupon-app-backend.vercel.app/api/categories")
       .then((res) => res.json())
       .then((data) => {
-        if (data.status === "success" && Array.isArray(data.data.categories)) {
+        if (
+          data.status === "success" &&
+          data.data &&
+          Array.isArray(data.data.categories)
+        ) {
           setCategories(data.data.categories);
+        } else {
+          console.warn("Unexpected categories format:", data);
         }
       })
       .catch((err) => console.error("Failed to fetch categories:", err));
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
-    console.log("Selected category ID:", e.target.value);
-  };
-
   return (
-    <div className="max-w-md mx-auto p-4">
-      <label htmlFor="categories" className="block mb-2 font-semibold">
-        Select Category
-      </label>
-      <select
-        id="categories"
-        value={selectedCategory}
-        onChange={handleChange}
-        className="w-full p-2 border rounded-md"
-      >
-        <option value="">All Categories</option>
-        {categories.map((cat) => (
-          <option key={cat._id} value={cat._id}>
-            {cat.name}
-          </option>
-        ))}
-      </select>
+    <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {categories.map((cat) => (
+        <div
+          key={cat._id}
+          className="bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition duration-300"
+        >
+          <h2 className="text-lg font-semibold text-gray-800">{cat.name}</h2>
+        </div>
+      ))}
     </div>
   );
 };
 
-export default CategoriesDropdown;
+export default CategoriesCards;
