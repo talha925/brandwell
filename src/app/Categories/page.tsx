@@ -1294,10 +1294,6 @@
 // };
 
 // export default CategoriesDropdown;
-
-
-
-
 "use client";
 import React, { useEffect, useState } from "react";
 
@@ -1308,23 +1304,33 @@ type Category = {
 
 const CategoriesCards = () => {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true); // ✅ Added
+  const [error, setError] = useState<string | null>(null); // ✅ Added
 
-  useEffect(() => {
-    fetch("https://coupon-app-backend.vercel.app/api/categories")
-      .then((res) => res.json())
-      .then((data) => {
-        if (
-          data.status === "success" &&
-          data.data &&
-          Array.isArray(data.data.categories)
-        ) {
-          setCategories(data.data.categories);
-        } else {
-          console.warn("Unexpected categories format:", data);
-        }
-      })
-      .catch((err) => console.error("Failed to fetch categories:", err));
-  }, []);
+ useEffect(() => {
+  fetch("/api/proxy-categories")
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      return res.json();
+    })
+    .then(json => {
+      console.log("API response:", json);
+      if (!json.data || !Array.isArray(json.data.categories)) {
+        throw new Error("Invalid data format");
+      }
+      setCategories(json.data.categories);
+      setLoading(false);
+      setError(null);
+    })
+    .catch(err => {
+      console.error("Fetch error:", err);
+      setError(err.message || "Failed to fetch categories");
+      setLoading(false);
+    });
+}, []);
+
+  if (loading) return <div className="p-6 text-center">Loading categories...</div>;
+  if (error) return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
 
   return (
     <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
