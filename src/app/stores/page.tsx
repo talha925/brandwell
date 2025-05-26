@@ -254,7 +254,7 @@
 // export default StorePage;
 'use client';
 
-import Link from "next/link";
+
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
