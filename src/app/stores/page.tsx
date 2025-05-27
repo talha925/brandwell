@@ -256,6 +256,7 @@
 
 
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 type Coupon = {
@@ -344,11 +345,12 @@ const StorePage = () => {
 
           </div>
           <div className="mt-4">
-           <button
+        <Link
+  href={`/store/${store._id}`}
   className="w-24 sm:w-[60px] mx-auto block bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-2xl text-center text-sm font-semibold transition duration-100 shadow-md"
 >
   View
-</button>
+</Link>
 
           </div>
         </div>
