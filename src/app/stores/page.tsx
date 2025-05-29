@@ -299,6 +299,7 @@ const StorePage = () => {
         setStores(json.data);
         setLoading(false);
         setError(null);
+        
       })
       .catch(err => {
         setError(err.message || "Failed to fetch stores");
@@ -345,7 +346,7 @@ const StorePage = () => {
             </h3>
 
             <Link
-              href={`/store/${store._id}`}
+               href={`/store/${store._id}`}
               className="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold py-2 px-6 rounded-full shadow-md transition"
             >
               view

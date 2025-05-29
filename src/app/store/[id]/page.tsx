@@ -622,7 +622,7 @@ type Store = {
   coupons: Coupon[];
 };
 
-const StorePage = () => {
+const Storelist = () => {
   const params = useParams();
   const id = params?.id as string;
 
@@ -705,22 +705,21 @@ const StorePage = () => {
                   </h3>
 
                   {/* Button + Code */}
-                  <div className="relative w-full h-12 mt-2">
+                  <div className="relative w-full h-12 mt-2 ">
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(coupon.code);
                         alert(`Coupon code "${coupon.code}" copied to clipboard!`);
                       }}
-                      className="absolute left-0 top-0 h-full w-full bg-gradient-to-r from-black to-blue-800 text-white font-semibold flex items-center justify-center text-sm tracking-wide"
+                      className="absolute transition-transform duration-200 active:scale-95 hover:w-24 left-0 top-0 h-full w-full bg-gradient-to-r from-black to-blue-800 text-white font-semibold flex items-center justify-center text-sm tracking-wide"
                     >
                       GET DEAL
                     </button>
 
                     <div className="absolute right-0 top-0 h-full w-[70px] bg-white border-dashed border-2 border-black flex items-center justify-center clip-path-custom text-xs font-bold text-black">
-                      {coupon.code}
+                       {coupon.code.slice(-3)}
                     </div>
                   </div>
-
                   {/* Expiry & Usage */}
                   <div className="text-xs text-gray-600 pt-2 space-y-1">
                     {coupon.expires && <p>EXPIRES: {coupon.expires}</p>}
@@ -745,4 +744,4 @@ const StorePage = () => {
   );
 };
 
-export default StorePage;
+export default Storelist;

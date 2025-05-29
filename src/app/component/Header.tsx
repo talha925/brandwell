@@ -36,10 +36,10 @@ export default function Header() {
                 <Link href="/"> HOME</Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
-                <Link href="Categories">CATEGORIES</Link>
+                <Link href="/Categories">CATEGORIES</Link>
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
-                <Link href="stores">STORES</Link>
+                <Link href="/stores">STORES</Link>
               </li>
               {/* <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
                 <Link href="Coupons">COUPONS</Link>
@@ -81,13 +81,13 @@ export default function Header() {
                 </li>
               ))} */}
              <div className="relative ">
-        <Link href="Categories" className="hover:text-orange-500 ">
+        <Link href="/Categories" className="hover:text-orange-500 ">
     CATEGORIES
           </Link>
       </div>
 
  <div className="relative">
-        <Link href="stores" className="hover:text-orange-500 ">
+        <Link href="/stores" className="hover:text-orange-500 ">
     STORES
           </Link>
       </div>
