@@ -254,11 +254,14 @@
 // export default StorePage;
 
 
+
+
+
 'use client';
 
-import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import Image from "next/image";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 
 type Coupon = {
   _id: string;
@@ -266,159 +269,89 @@ type Coupon = {
   code: string;
   active: boolean;
   isValid: boolean;
-  expires?: string; // Optional expiry date
-  usedCount?: number; // Optional usage count
 };
 
 type Store = {
   _id: string;
+  name: string;
+  trackingUrl: string;
   image: {
     url: string;
     alt: string;
   };
-  name: string;
-  about?: string;
-  short_description?: string;
-  long_description?: string;
   coupons: Coupon[];
+  heading: string;
+  language: string;
 };
 
 const StorePage = () => {
-  const params = useParams();
-  const id = params?.id as string;
-
-  const [store, setStore] = useState<Store | null>(null);
+  const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchStore() {
-      try {
-        const res = await fetch(`/api/store/${id}`);
-        if (!res.ok) throw new Error('Store not found');
-        const data = await res.json();
-        setStore(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
+    fetch("/api/proxy-stores")
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
+      .then(json => {
+        setStores(json.data);
         setLoading(false);
-      }
-    }
-    fetchStore();
-  }, [id]);
+        setError(null);
+      })
+      .catch(err => {
+        setError(err.message || "Failed to fetch stores");
+        setLoading(false);
+      });
+  }, []);
 
-  
-
-  if (loading)
+  if (loading) {
     return (
-      <p className="text-center py-20 text-gray-600 font-medium text-lg">
-        Loading store details...
-      </p>
+      <div className="text-center mt-20 text-xl font-semibold text-gray-600 animate-pulse">
+        Loading stores...
+      </div>
     );
-  if (!store)
-    return (
-      <p className="text-center py-20 text-red-600 font-semibold text-xl">
-        Store not found
-      </p>
-    );
+  }
 
-  const aboutText =
-    store.about ||
-    store.long_description ||
-    store.short_description ||
-    'Discover amazing offers and coupons from our store. Save more every time you shop with us!';
+  if (error) {
+    return (
+      <div className="text-center mt-20 text-xl font-semibold text-red-600">
+        Error: {error}
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-50 min-h-screen font-sans">
-      {/* Store Name */}
-      <div className="flex justify-center mb-12">
-        {/* Adjusted font size for responsiveness on smaller screens */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center text-gray-800">
-          {store.name}
-        </h1>
-      </div>
+    <div className="max-w-7xl mx-auto px-4 py-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+        {stores.map((store) => (
+          <div
+            key={store._id}
+            className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col justify-between items-center shadow-sm hover:shadow-md transition-all"
+          >
+            <div className="h-28 flex items-center justify-center mb-4">
+              <Image
+                src={store.image.url}
+                alt={store.image.alt || store.name}
+                width={160}
+                height={80}
+                className="object-contain max-h-24"
+              />
+            </div>
 
-      {/* Main Content Area: Coupons and About Section */}
-      <div className="flex flex-col md:flex-row gap-12 justify-center items-start"> {/* items-start to align top */}
-        {/* Coupons Section */}
-        <main className="flex-1 space-y-6 w-full md:max-w-3xl lg:max-w-4xl"> {/* Adjusted width for main content */}
-          {store.coupons.length === 0 ? (
-            <p className="text-gray-500 text-center py-10 text-lg">
-              No coupons available at the moment.
-            </p>
-          ) : (
-            store.coupons.map((coupon) => (
-              <div
-                key={coupon._id}
-                // Removed ml-28, made padding responsive
-                className="bg-gray-200 rounded-xl shadow-lg p-4 sm:p-6 md:p-8 flex flex-col md:flex-row gap-4 sm:gap-6 items-center justify-between mx-auto"
-              >
-                {/* Logo Image */}
-                <div 
-                  // Removed fixed margins, made size responsive, added flex-shrink-0
-                  className="bg-white rounded-lg w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] flex items-center justify-center shadow-sm flex-shrink-0 mb-4 md:mb-0 md:mr-6"
-                >
-                  <Image
-                    src={store.image.url}
-                    alt={store.image.alt}
-                    width={120}
-                    height={120}
-                    className="object-contain"
-                  />
-                </div>
+            <h3 className="text-lg font-medium text-gray-800 text-center mb-4">
+              {store.name}
+            </h3>
 
-                {/* Coupon Info */}
-                <div className="flex-1 w-full text-center md:text-left">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                    {coupon.offerDetails}
-                  </h3>
-
-                  {/* Deal Button + Code (Revised for split effect responsiveness) */}
-                  <div className="flex w-full max-w-sm mx-auto md:mx-0 h-12 rounded-md overflow-hidden shadow-md">
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(coupon.code);
-                        alert(`Coupon code "${coupon.code}" copied!`);
-                      }}
-                      // Responsive button classes, replaced absolute positioning
-                      className="flex-1 bg-gradient-to-r from-black to-blue-800 text-white font-semibold py-3 px-4 flex items-center justify-center text-sm tracking-wide rounded-l-md hover:brightness-110 transition-all cursor-pointer"
-                    >
-                      GET DEAL
-                    </button>
-                    {/* Code display section */}
-                    <div 
-                      // Fixed width for code, added dashed border styling
-                      className="w-[80px] sm:w-[90px] bg-white border-y-2 border-r-2 border-dashed border-black flex items-center justify-center text-xs font-bold text-black rounded-r-md flex-shrink-0"
-                    >
-                      {coupon.code}
-                    </div>
-                  </div>
-
-                  {/* Expiry & Usage Info */}
-                  <div className="text-xs text-gray-600 pt-3 space-y-1">
-                    {coupon.expires && <p>EXPIRES: {coupon.expires}</p>}
-                    {coupon.usedCount !== undefined && <p>USED: {coupon.usedCount}</p>}
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </main>
-
-        {/* About Section */}
-        <aside 
-          // Responsive width and padding
-          className="w-full md:w-80 bg-white shadow-xl rounded-xl p-6 h-fit flex flex-col items-center text-center mx-auto md:mx-0"
-        >
-          <h2 className="text-3xl font-semibold text-gray-800 mb-4">
-            About
-          </h2>
-          <p className="text-sm text-gray-700 leading-relaxed mb-6">
-            {aboutText}
-          </p>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-md text-sm font-bold"> {/* Changed font-medium to font-bold */}
-            View
-          </button>
-        </aside>
+            <Link
+              href={`/store/${store._id}`}
+              className="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold py-2 px-6 rounded-full shadow-md transition"
+            >
+              view
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );
