@@ -593,7 +593,6 @@
 
 
 
-
 'use client';
 
 import Image from 'next/image';
@@ -606,8 +605,8 @@ type Coupon = {
   code: string;
   active: boolean;
   isValid: boolean;
-  expires?: string; // Optional expiry date
-  usedCount?: number; // Optional usage count
+  expires?: string;
+  usedCount?: number;
 };
 
 type Store = {
@@ -666,84 +665,81 @@ const StorePage = () => {
     'Discover amazing offers and coupons from our store. Save more every time you shop with us!';
 
   return (
-   <div className=" block max-w-7xl mx-auto px-9 py-12 bg-gray-50 min-h-screen">
-  {/* Store Name */}
-  <div className="flex justify-center mb-12">
-    <h1 className="text-5xl font-extrabold text-center text-gray-800">
-      {store.name}
-    </h1>
-  </div>
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 bg-gray-50 min-h-screen">
+      {/* Store Name */}
+      <div className="flex justify-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-center text-gray-800">
+          {store.name}
+        </h1>
+      </div>
 
-  {/* Coupons Section */}
-  <div className="flex flex-col md:flex-row gap-12 justify-center">
-    <main className="flex-1 space-y-6">
-      {store.coupons.length === 0 ? (
-        <p className="text-gray-500 text-center py-10 text-lg">
-          No coupons available at the moment.
-        </p>
-      ) : (
-        store.coupons.map((coupon) => (
-          <div
-            key={coupon._id}
-            className="bg-gray-200 rounded-xl shadow-lg p-10 flex flex-col md:flex-row gap-6 justify-between items-center ml-28"
-          > 
-            {/* Logo Image */}
-            <div className="bg-white rounded-lg w-[120px] h-[120px] flex items-center justify-center shadow-sm ml-8 mr-11">
-              <Image
-                src={store.image.url}
-                alt={store.image.alt}
-                width={120}
-                height={120}
-                className="object-contain"
-              />
-            </div>
+      {/* Layout */}
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+        {/* Coupons Section */}
+        <main className="w-full lg:flex-1 space-y-6">
+          {store.coupons.length === 0 ? (
+            <p className="text-gray-500 text-center py-10 text-lg">
+              No coupons available at the moment.
+            </p>
+          ) : (
+            store.coupons.map((coupon) => (
+              <div
+                key={coupon._id}
+                className="bg-gray-200 rounded-xl shadow-lg p-6 md:p-10 flex flex-row gap-6 items-center"
+              >
+                {/* Logo Image */}
+                <div className="bg-white rounded-lg w-[100px] h-[100px] md:w-[120px] md:h-[120px] flex items-center justify-center shadow-sm">
+                  <Image
+                    src={store.image.url}
+                    alt={store.image.alt}
+                    width={100}
+                    height={100}
+                    className="object-contain"
+                  />
+                </div>
 
-            {/* Coupon Info */}
-            <div className="flex-1 space-y-3 text-center md:text-left">
-              <h3 className="text-lg font-semibold text-gray-800">
-                {coupon.offerDetails}
-              </h3>
+                {/* Coupon Info */}
+                <div className="flex-1 space-y-3 text-center md:text-left w-full">
+                  <h3 className="text-base md:text-lg font-semibold text-gray-800">
+                    {coupon.offerDetails}
+                  </h3>
 
-              {/* Deal Button + Code */}
-              <div className="relative mx-auto md:mx-0 w-full md:w-[70%] h-12">
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(coupon.code);
-                    alert(`Coupon code "${coupon.code}" copied to clipboard!`);
-                  }}
-                  className=" absolute left-0 top-0 h-full w-full bg-gradient-to-r from-black to-blue-800 text-white font-semibold py-3 px-6 rounded-none flex items-center justify-center text-sm tracking-wideabsolute  pl-6 cursor-vertical-text "
-                >
-                  GET DEAL
-                </button>
+                  {/* Button + Code */}
+                  <div className="relative w-full h-12 mt-2">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(coupon.code);
+                        alert(`Coupon code "${coupon.code}" copied to clipboard!`);
+                      }}
+                      className="absolute left-0 top-0 h-full w-full bg-gradient-to-r from-black to-blue-800 text-white font-semibold flex items-center justify-center text-sm tracking-wide"
+                    >
+                      GET DEAL
+                    </button>
 
-                <div className="absolute right-0 top-0 h-full w-[70px] bg-white border-dashed border-2 border-black flex items-center justify-center clip-path-custom contain-inline-size text-xs font-bold text-black">
-                  {coupon.code}
+                    <div className="absolute right-0 top-0 h-full w-[70px] bg-white border-dashed border-2 border-black flex items-center justify-center clip-path-custom text-xs font-bold text-black">
+                      {coupon.code}
+                    </div>
+                  </div>
+
+                  {/* Expiry & Usage */}
+                  <div className="text-xs text-gray-600 pt-2 space-y-1">
+                    {coupon.expires && <p>EXPIRES: {coupon.expires}</p>}
+                    {coupon.usedCount !== undefined && <p>USED: {coupon.usedCount}</p>}
+                  </div>
                 </div>
               </div>
+            ))
+          )}
+        </main>
 
-              {/* Expiry & Usage Info */}
-              <div className="text-xs text-gray-600 pt-2 space-y-1">
-                {coupon.expires && <p>EXPIRES: {coupon.expires}</p>}
-                {coupon.usedCount !== undefined && <p>USED: {coupon.usedCount}</p>}
-              </div>
-            </div>
-          </div>
-        ))
-      )}
-    </main>
-
-
-
-        <aside className="w-full  md:w-80 bg-white shadow-xl rounded-xl p-4 h-fit flex flex-col items-center text-center">
-  <h2 className="text-2xl font-semibold text-gray-800 mb-3">About</h2>
-  <p className="text-sm text-gray-700 leading-relaxed mb-6">
-    {aboutText}
-  </p>
-  <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-md text-sm font-medium">
-    view
-  </button>
-</aside>
-
+        {/* Sidebar: About Section */}
+        <aside className="w-full lg:w-80 bg-white shadow-xl rounded-xl p-4 flex flex-col items-center text-center">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-3">About</h2>
+          <p className="text-sm text-gray-700 leading-relaxed mb-6">{aboutText}</p>
+          <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-md text-sm font-medium">
+            view
+          </button>
+        </aside>
       </div>
     </div>
   );
