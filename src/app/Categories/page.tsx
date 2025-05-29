@@ -1294,56 +1294,153 @@
 // };
 
 // export default CategoriesDropdown;
+
+
+
+// "use client";
+// import React, { useEffect, useState } from "react";
+
+// type Category = {
+//   _id: string;
+//   name: string;
+// };
+
+// const CategoriesCards = () => {
+//   const [categories, setCategories] = useState<Category[]>([]);
+//   const [loading, setLoading] = useState(true); // ✅ Added
+//   const [error, setError] = useState<string | null>(null); // ✅ Added
+
+//  useEffect(() => {
+//   fetch("/api/proxy-categories")
+//     .then(res => {
+//       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+//       return res.json();
+//     })
+//     .then(json => {
+//       console.log("API response:", json);
+//       if (!json.data || !Array.isArray(json.data.categories)) {
+//         throw new Error("Invalid data format");
+//       }
+//       setCategories(json.data.categories);
+//       setLoading(false);
+//       setError(null);
+//     })
+//     .catch(err => {
+//       console.error("Fetch error:", err);
+//       setError(err.message || "Failed to fetch categories");
+//       setLoading(false);
+//     });
+// }, []);
+
+//   if (loading) return <div className="p-6 text-center">Loading categories...</div>;
+//   if (error) return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
+
+//   return (
+//     <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+//       {categories.map((cat) => (
+//         <div
+//           key={cat._id}
+//           className="bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition duration-300"
+//         >
+//           <h2 className="text-lg font-semibold text-gray-800">{cat.name}</h2>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+// export default CategoriesCards;
+
+
+
+
+
+
+
+
+
 "use client";
+
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Category = {
   _id: string;
   name: string;
+ 
 };
 
 const CategoriesCards = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true); // ✅ Added
-  const [error, setError] = useState<string | null>(null); // ✅ Added
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
- useEffect(() => {
-  fetch("/api/proxy-categories")
-    .then(res => {
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      return res.json();
-    })
-    .then(json => {
-      console.log("API response:", json);
-      if (!json.data || !Array.isArray(json.data.categories)) {
-        throw new Error("Invalid data format");
-      }
-      setCategories(json.data.categories);
-      setLoading(false);
-      setError(null);
-    })
-    .catch(err => {
-      console.error("Fetch error:", err);
-      setError(err.message || "Failed to fetch categories");
-      setLoading(false);
-    });
-}, []);
+  useEffect(() => {
+    fetch("/api/proxy-categories")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
+      .then((json) => {
+        if (!json.data || !Array.isArray(json.data.categories)) {
+          throw new Error("Invalid data format");
+        }
+        setCategories(json.data.categories);
+        setLoading(false);
+        setError(null);
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        setError(err.message || "Failed to fetch categories");
+        setLoading(false);
+      });
+  }, []);
 
-  if (loading) return <div className="p-6 text-center">Loading categories...</div>;
-  if (error) return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
+  if (loading)
+    return <div className="text-center py-20 text-gray-600 font-medium text-lg">Loading categories...</div>;
+
+  if (error)
+    return <div className="text-center py-20 text-red-600 font-semibold text-xl">Error: {error}</div>;
 
   return (
-    <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {categories.map((cat) => (
-        <div
-          key={cat._id}
-          className="bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition duration-300"
-        >
-          <h2 className="text-lg font-semibold text-gray-800">{cat.name}</h2>
-        </div>
-      ))}
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-10">
+        Categories
+      </h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {categories.map((cat) => (
+          <div
+            key={cat._id}
+            className="border rounded-xl shadow-sm hover:shadow-md transition-all duration-300 bg-white p-5 flex flex-col items-center gap-4"
+          >
+            
+            {/* <Image
+              src={cat.image?.url || "https://via.placeholder.com/80"}
+              alt={cat.image?.alt || cat.name}
+              width={80}
+              height={80}
+              className="rounded-md border object-contain"
+            /> */}
+
+            {/* Name */}
+            <h3 className="text-xl font-semibold text-gray-800 text-center">{cat.name}</h3>
+
+           
+            <button
+              // href={`/category/${cat._id}`}
+              className="text-sm px-2 py-1.5 bg-orange-500 text-white rounded-md hover:bg-orange-700 transition"
+            >
+              View
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default CategoriesCards;
+
+
+

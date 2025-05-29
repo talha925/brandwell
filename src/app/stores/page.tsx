@@ -252,8 +252,12 @@
 // };
 
 // export default StorePage;
-'use client';
 
+
+
+
+
+'use client';
 
 import Image from "next/image";
 import Link from "next/link";
@@ -319,45 +323,38 @@ const StorePage = () => {
   }
 
   return (
+    <div className="max-w-7xl mx-auto px-4 py-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+        {stores.map((store) => (
+          <div
+            key={store._id}
+            className="bg-white border border-gray-200 rounded-xl p-6 flex flex-col justify-between items-center shadow-sm hover:shadow-md transition-all"
+          >
+            <div className="h-28 flex items-center justify-center mb-4">
+              <Image
+                src={store.image.url}
+                alt={store.image.alt || store.name}
+                width={160}
+                height={80}
+                className="object-contain max-h-24"
+              />
+            </div>
 
-    
-    <div className="p-7 max-w-5xl items-center mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-     
+            <h3 className="text-lg font-medium text-gray-800 text-center mb-4">
+              {store.name}
+            </h3>
 
-      {stores.map((store) => (
-       <div
-  key={store._id}
-  className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 p-5"
->
- 
-
-  <div className="flex justify-center">
-    <Image
-      src={store.image.url}
-      alt={store.image.alt || "Store Image"}
-      width={100}
-      height={100}
-      priority={true}
-    />
-  </div>
-          <div className="flex flex-col gap-1 mt-3">
-            <h2 className="text-2xl text-center font-thin text-gray-800">{store.name}</h2>
-
+            <Link
+              href={`/store/${store._id}`}
+              className="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold py-2 px-6 rounded-full shadow-md transition"
+            >
+              view
+            </Link>
           </div>
-          <div className="mt-4">
-        <Link
-  href={`/store/${store._id}`}
-  className="w-24 sm:w-[60px] mx-auto block bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-2xl text-center text-sm font-semibold transition duration-100 shadow-md"
->
-  View
-</Link>
-
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
 
 export default StorePage;
-
