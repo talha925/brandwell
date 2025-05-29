@@ -666,7 +666,7 @@ const StorePage = () => {
     'Discover amazing offers and coupons from our store. Save more every time you shop with us!';
 
   return (
-   <div className="max-w-7xl mx-auto px-9 py-12 bg-gray-50 min-h-screen">
+   <div className=" block max-w-7xl mx-auto px-9 py-12 bg-gray-50 min-h-screen">
   {/* Store Name */}
   <div className="flex justify-center mb-12">
     <h1 className="text-5xl font-extrabold text-center text-gray-800">
@@ -711,7 +711,7 @@ const StorePage = () => {
                     navigator.clipboard.writeText(coupon.code);
                     alert(`Coupon code "${coupon.code}" copied to clipboard!`);
                   }}
-                  className="absolute left-0 top-0 h-full w-full bg-gradient-to-r from-black to-blue-800 text-white font-semibold py-3 px-6 rounded-none flex items-center justify-center text-sm tracking-wideabsolute  pl-6 cursor-vertical-text "
+                  className=" absolute left-0 top-0 h-full w-full bg-gradient-to-r from-black to-blue-800 text-white font-semibold py-3 px-6 rounded-none flex items-center justify-center text-sm tracking-wideabsolute  pl-6 cursor-vertical-text "
                 >
                   GET DEAL
                 </button>
