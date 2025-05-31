@@ -7,13 +7,13 @@ export async function GET() {
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "no-store", // live data every time
+      cache: "no-store", 
     });
 
     const data = await res.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error("❌ Proxy Error:", error);
+    console.error("Proxy Error:", error);
     return NextResponse.json({ error: "Failed to fetch data from backend" }, { status: 500 });
   }
 }
