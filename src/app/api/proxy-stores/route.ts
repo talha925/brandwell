@@ -7,7 +7,7 @@ export async function GET() {
       headers: {
         "Content-Type": "application/json",
       },
-      cache: "no-store", 
+      cache: "no-store", // check repo pull request
     });
 
     const data = await res.json();

@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "./component/Header";
+import CleanDOM from "@/components/CleanDOM";
 
+// Force static rendering to avoid hydration mismatches
+export const dynamic = 'force-static';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,9 +32,10 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
-      <Header />
-   
+        <CleanDOM />
+        <Header />
         {children}
       </body>
     </html>

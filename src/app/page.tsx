@@ -44,10 +44,10 @@ export default function Blogs() {
               <Image
                 src={images[currentSlide]}
                 alt="Current Image"
-                layout="responsive"
                 width={1920}
                 height={1080}
                 className="w-full h-full object-cover"
+                priority
               />
               <div className="absolute inset-0 flex flex-col items-start text-white p-44 mb-80">
                 <h1 className="mb-16 mt-32">
@@ -73,14 +73,13 @@ export default function Blogs() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2  gap-6">
           <div className="relative bg-blue-50 md:ml-4 shadow-md rounded-md  overflow-hidden hover:shadow-sm transition-shadow  ">
     
-
-<Image
-  src="/image/travel1.jpg"
-  alt="Travel Image"
-  layout="intrinsic"
-  width={800}
-  height={300}
-/>
+            <Image
+              src="/image/travel1.jpg"
+              alt="Travel Image"
+              width={800}
+              height={300}
+              className="w-full h-auto"
+            />
 
             <h1 className="p-10 text-black font-bold text-3xl">Travel</h1>
           </div>

@@ -41,6 +41,9 @@ export default function Header() {
               <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
                 <Link href="/stores">STORES</Link>
               </li>
+              <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
+                <Link href="/blog">BLOG</Link>
+              </li>
               {/* <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
                 <Link href="Coupons">COUPONS</Link>
               </li> */}
@@ -89,6 +92,11 @@ export default function Header() {
  <div className="relative">
         <Link href="/stores" className="hover:text-orange-500 ">
     STORES
+          </Link>
+      </div>
+      <div className="relative">
+        <Link href="/blog" className="hover:text-orange-500 ">
+    BLOG
           </Link>
       </div>
       {/* <Link href="Coupons" className="hover:text-orange-500 ">
