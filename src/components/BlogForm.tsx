@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Editor } from '@tinymce/tinymce-react';  // Import TinyMCE
 
 interface Category {
   _id: string;
@@ -145,6 +146,18 @@ const BlogForm = () => {
     }
   };
 
+  // Handle Long Description with TinyMCE Editor
+  const handleEditorChange = (content: string, editor: any) => {
+    setLongDescription(content);  // Update longDescription with editor content
+    
+    // Save to localStorage
+    try {
+      localStorage.setItem('blogDraft', content);
+    } catch (error) {
+      console.error('Error saving draft to localStorage:', error);
+    }
+  };
+
   // Validation function
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
@@ -164,9 +177,19 @@ const BlogForm = () => {
       newErrors.shortDescription = 'Short description must not exceed 500 characters';
     }
 
-    if (!longDescription.trim()) {
+    // For TinyMCE content, we need to check if it's empty or too short
+    // This removes HTML tags to check actual content length
+    const stripHtml = (html: string) => {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      return tmp.textContent || tmp.innerText || '';
+    };
+    
+    const plainLongDescription = stripHtml(longDescription);
+    
+    if (!plainLongDescription.trim()) {
       newErrors.longDescription = 'Long description is required';
-    } else if (longDescription.trim().length < 50) {
+    } else if (plainLongDescription.trim().length < 50) {
       newErrors.longDescription = 'Long description must be at least 50 characters long';
     }
 
@@ -234,6 +257,15 @@ const BlogForm = () => {
     }
   };
 
+  // Sanitize HTML content
+  const sanitizeHtml = (html: string): string => {
+    // This is a basic sanitization - you might want to use a library like DOMPurify for production
+    return html
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
+      .replace(/on\w+="[^"]*"/g, '') // Remove event handlers
+      .replace(/javascript:/g, ''); // Remove javascript: protocol
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -273,10 +305,13 @@ const BlogForm = () => {
       .map(tag => tag.trim())
       .filter(tag => tag.length > 0);
 
+    // Sanitize the HTML content from TinyMCE
+    const sanitizedLongDescription = sanitizeHtml(longDescription);
+
     const blogData = {
       title: title.trim(),
       shortDescription: shortDescription.trim(),
-      longDescription: longDescription.trim(),
+      longDescription: sanitizedLongDescription,
       author: {
         name: authorName.trim(),
         email: authorEmail.trim() || undefined,
@@ -363,17 +398,17 @@ const BlogForm = () => {
     setNewFaqQuestion('');
     setNewFaqAnswer('');
     setErrors({});
+    // Clear localStorage draft
+    localStorage.removeItem('blogDraft');
   };
 
   useEffect(() => {
-    if (longDescription) {
-      localStorage.setItem('blogDraft', longDescription);
+    try {
+      const saved = localStorage.getItem('blogDraft');
+      if (saved) setLongDescription(saved);
+    } catch (error) {
+      console.error('Error loading draft from localStorage:', error);
     }
-  }, [longDescription]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('blogDraft');
-    if (saved) setLongDescription(saved);
   }, []);
 
   return (
@@ -432,15 +467,41 @@ const BlogForm = () => {
             <label htmlFor="longDescription" className="block text-sm font-medium text-gray-700 mb-2">
               Long Description *
             </label>
-            <textarea
+            <Editor
+              apiKey='6be041uk7orm1ngovq1ze4udc28my9puzhlaeosuhcm6g3lg'
               id="longDescription"
               value={longDescription}
-              onChange={(e) => setLongDescription(e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-32 resize-y ${
-                errors.longDescription ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="Write your detailed blog content here..."
-              rows={8}
+              onEditorChange={handleEditorChange}
+              init={{
+                height: 400,
+                menubar: true,
+                plugins: [
+                  // Core editing features
+                  'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 
+                  'media', 'searchreplace', 'table', 'visualblocks', 'wordcount', 'code', 'fullscreen',
+                  'insertdatetime', 'preview', 'help',
+                  // Premium features available for free trial
+                  'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed'
+                ],
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | ' +
+                  'link image media table | align lineheight | checklist numlist bullist indent outdent | ' +
+                  'emoticons charmap | removeformat | code fullscreen help',
+                content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 16px; }',
+                images_upload_handler: function (blobInfo, progress) {
+                  return new Promise((resolve, reject) => {
+                    // Here you would typically upload the image to your server
+                    // For now, we'll just convert it to a data URL
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                      resolve(reader.result as string);
+                    };
+                    reader.onerror = function () {
+                      reject('Image upload failed');
+                    };
+                    reader.readAsDataURL(blobInfo.blob());
+                  });
+                }
+              }}
             />
             {errors.longDescription && <p className="text-red-500 text-sm mt-1">{errors.longDescription}</p>}
           </div>
@@ -758,19 +819,16 @@ const BlogForm = () => {
                     className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                       errors[`faqQuestion${index}`] ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="Enter question"
                   />
-                  {errors[`faqQuestion${index}`] && (
-                    <p className="text-red-500 text-xs mt-1">{errors[`faqQuestion${index}`]}</p>
-                  )}
+                  {errors[`faqQuestion${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`faqQuestion${index}`]}</p>}
                 </div>
-                <div>
+                <div className="mb-2">
                   <label htmlFor={`faqAnswer${index}`} className="block text-sm font-medium text-gray-700 mb-1">
                     Answer
                   </label>
                   <textarea
                     id={`faqAnswer${index}`}
-                    rows={2}
+                    rows={3}
                     value={faq.answer}
                     onChange={(e) => {
                       const updatedFaqs = [...faqs];
@@ -780,58 +838,23 @@ const BlogForm = () => {
                     className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                       errors[`faqAnswer${index}`] ? 'border-red-500' : 'border-gray-300'
                     }`}
-                    placeholder="Enter answer"
                   />
-                  {errors[`faqAnswer${index}`] && (
-                    <p className="text-red-500 text-xs mt-1">{errors[`faqAnswer${index}`]}</p>
-                  )}
+                  {errors[`faqAnswer${index}`] && <p className="text-red-500 text-sm mt-1">{errors[`faqAnswer${index}`]}</p>}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* New FAQ Question */}
-          <div className="mb-4">
-            <label htmlFor="newFaqQuestion" className="block text-sm font-medium text-gray-700 mb-2">
-              New Question
-            </label>
-            <input
-              id="newFaqQuestion"
-              type="text"
-              value={newFaqQuestion}
-              onChange={(e) => setNewFaqQuestion(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter new question"
-            />
-          </div>
-
-          {/* New FAQ Answer */}
-          <div className="mb-4">
-            <label htmlFor="newFaqAnswer" className="block text-sm font-medium text-gray-700 mb-2">
-              Answer
-            </label>
-            <textarea
-              id="newFaqAnswer"
-              rows={3}
-              value={newFaqAnswer}
-              onChange={(e) => setNewFaqAnswer(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter answer"
-            />
-          </div>
-
-          {/* Add New FAQ Button */}
-          <div className="flex justify-center">
+          {/* Add New FAQ */}
+          <div className="flex items-center mt-4">
             <button
               type="button"
               onClick={() => {
-                if (newFaqQuestion.trim() && newFaqAnswer.trim()) {
-                  setFaqs([...faqs, { question: newFaqQuestion.trim(), answer: newFaqAnswer.trim() }]);
-                  setNewFaqQuestion('');
-                  setNewFaqAnswer('');
-                }
+                setFaqs([...faqs, { question: newFaqQuestion, answer: newFaqAnswer }]);
+                setNewFaqQuestion('');
+                setNewFaqAnswer('');
               }}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Add New FAQ
             </button>
@@ -839,30 +862,18 @@ const BlogForm = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-center pt-6">
+        <div className="flex justify-center">
           <button
             type="submit"
-            disabled={loading || categoriesLoading || storesLoading}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading}
+            className="px-8 py-3 bg-green-600 text-white rounded-lg text-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-300"
           >
-            {loading ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Creating...
-              </div>
-            ) : (
-              'Create Blog Post'
-            )}
+            {loading ? 'Creating...' : 'Create Blog Post'}
           </button>
         </div>
 
-        {/* Message Display */}
         {message && (
-          <div className={`mt-4 p-4 rounded-lg text-center ${
-            message.includes('Error') 
-              ? 'bg-red-100 text-red-700 border border-red-200' 
-              : 'bg-green-100 text-green-700 border border-green-200'
-          }`}>
+          <div className="mt-6 text-center text-lg text-gray-700">
             {message}
           </div>
         )}
@@ -871,4 +882,4 @@ const BlogForm = () => {
   );
 };
 
-export default BlogForm; 
+export default BlogForm;
