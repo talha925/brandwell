@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';  // Import TinyMCE
+import { useRouter } from 'next/navigation';
+import { api } from '@/lib/api'; // Import our API client
+import { useAuth } from '@/context/AuthContext'; // Import useAuth hook
 
 interface Category {
   _id: string;
@@ -34,6 +37,9 @@ const cleanAndFormatUrl = (url: string): string => {
 };
 
 const BlogForm = () => {
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+  
   // Required Fields
   const [title, setTitle] = useState('');
   const [shortDescription, setShortDescription] = useState('');
@@ -80,13 +86,8 @@ const BlogForm = () => {
     const fetchCategories = async () => {
       try {
         setCategoriesLoading(true);
-        const response = await fetch('/api/blog-categories');
-        if (response.ok) {
-          const data = await response.json();
-          setCategories(data.data || data || []);
-        } else {
-          console.error('Failed to fetch categories');
-        }
+        const data = await api.get('/api/blog-categories');
+        setCategories(data.data || data || []);
       } catch (error) {
         console.error('Error fetching categories:', error);
       } finally {
@@ -102,19 +103,14 @@ const BlogForm = () => {
     const fetchStores = async () => {
       try {
         setStoresLoading(true);
-        const response = await fetch('/api/proxy-stores');
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Stores API response:', data);
-          const storesData = data.data || data || [];
-          console.log('Stores data:', storesData);
-          if (storesData.length > 0) {
-            console.log('First store structure:', storesData[0]);
-          }
-          setStores(storesData);
-        } else {
-          console.error('Failed to fetch stores');
+        const data = await api.get('/api/proxy-stores');
+        console.log('Stores API response:', data);
+        const storesData = data.data || data || [];
+        console.log('Stores data:', storesData);
+        if (storesData.length > 0) {
+          console.log('First store structure:', storesData[0]);
         }
+        setStores(storesData);
       } catch (error) {
         console.error('Error fetching stores:', error);
       } finally {
@@ -347,23 +343,10 @@ const BlogForm = () => {
     };
 
     try {
-      const response = await fetch('/api/create-blog', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(blogData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage('Blog created successfully!');
-        // Reset form after successful save
-        resetForm();
-      } else {
-        setMessage(`Error: ${data.error || 'Failed to create blog'}`);
-      }
+      const response = await api.post('/api/create-blog', blogData);
+      setMessage('Blog created successfully!');
+      // Reset form after successful save
+      resetForm();
     } catch (error) {
       console.error('Error creating blog:', error);
       setMessage('Error creating blog. Please try again.');
@@ -410,6 +393,22 @@ const BlogForm = () => {
       console.error('Error loading draft from localStorage:', error);
     }
   }, []);
+
+  // Check if user is authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  // If still loading auth state or not authenticated, show loading state
+  if (isLoading || !isAuthenticated) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-lg">

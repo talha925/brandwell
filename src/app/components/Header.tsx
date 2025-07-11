@@ -4,10 +4,80 @@ import Image from "next/image";
 import Link from "next/link";
 import { Menu, LogOut } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useAuth } from "@/context/AuthContext";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const { user, isAuthenticated, logout, isLoading } = useAuth();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check authentication status when component mounts
+    const checkAuth = () => {
+      const token = localStorage.getItem('authToken');
+      const userStr = localStorage.getItem('user');
+      
+      if (token) {
+        setIsLoggedIn(true);
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            setUserName(user.name || user.email || "User");
+          } catch (e) {
+            console.error("Error parsing user data", e);
+          }
+        }
+      } else {
+        setIsLoggedIn(false);
+        setUserName("");
+      }
+    };
+    
+    // Run on component mount
+    checkAuth();
+    
+    // Setup event listener for storage changes (for multi-tab support)
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      
+      // Call the logout API to clear the HTTP-only cookie
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      // Clear client-side storage
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      
+      // Update state
+      setIsLoggedIn(false);
+      setUserName("");
+      
+      // Redirect to home page
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <header className="bg-white text-sm overflow-x-hidden flex flex-col md:flex-row items-center md:justify-between sm:flex-row-items-center sm:justify-between p-1 md:p-1  sm-p-0 space-y-2 md:space-y-0">
@@ -44,18 +114,18 @@ export default function Header() {
               <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
                 <Link href="/blog">BLOG</Link>
               </li>
-              {isAuthenticated && (
+              {isLoggedIn && (
                 <>
                   <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
                     <Link href="/blog/create">CREATE BLOG</Link>
                   </li>
                   <li className="px-4 py-2 hover:bg-gray-100 text-red-600">
                     <button 
-                      onClick={logout} 
+                      onClick={handleLogout} 
                       className="flex items-center"
-                      disabled={isLoading}
+                      disabled={isLoggingOut}
                     >
-                      <LogOut size={16} className="mr-1" /> {isLoading ? 'LOGGING OUT...' : 'LOGOUT'}
+                      <LogOut size={16} className="mr-1" /> {isLoggingOut ? 'LOGGING OUT...' : 'LOGOUT'}
                     </button>
                   </li>
                 </>
@@ -85,7 +155,7 @@ export default function Header() {
           </Link>
         </div>
         
-        {isAuthenticated && (
+        {isLoggedIn && (
           <>
             <div className="relative">
               <Link href="/blog/create" className="hover:text-orange-500">
@@ -93,13 +163,13 @@ export default function Header() {
               </Link>
             </div>
             <div className="flex items-center">
-              <span className="mr-2 text-gray-600">Hi, {user?.name || 'User'}</span>
+              <span className="mr-2 text-gray-600">Hi, {userName}</span>
               <button 
-                onClick={logout}
+                onClick={handleLogout}
                 className="flex items-center text-red-600 hover:text-red-800"
-                disabled={isLoading}
+                disabled={isLoggingOut}
               >
-                <LogOut size={16} className="mr-1" /> {isLoading ? 'LOGGING OUT...' : 'LOGOUT'}
+                <LogOut size={16} className="mr-1" /> {isLoggingOut ? 'LOGGING OUT...' : 'LOGOUT'}
               </button>
             </div>
           </>
@@ -114,9 +184,4 @@ export default function Header() {
       </div>
     </header>
   );
-}
-
-
-
-
-
+} 
