@@ -25,11 +25,4 @@ export {
 } from './ui';
 
 // Other components
-export { default as Header } from './Header';
-export { default as LazyComponent } from './LazyComponent';
-export { 
-  createMemoizedComponent,
-  deepCompareProps,
-  createDeepMemoizedComponent 
-} from './MemoizedComponent';
-export { default as CleanDOM } from './CleanDOM'; 
+export { default as Header } from './Header'; 
