@@ -44,4 +44,22 @@ export const processTags = (tagsString: string): string[] => {
     .split(',')
     .map(tag => tag.trim())
     .filter(tag => tag.length > 0);
+};
+
+/**
+ * Decodes HTML entities in a string
+ */
+export const decodeHTML = (input: string): string => {
+  if (typeof window !== 'undefined') {
+    const doc = new DOMParser().parseFromString(input, "text/html");
+    return doc.documentElement.textContent || input;
+  }
+  // Fallback for server-side rendering
+  return input
+    .replace(/&amp;/g, '&')
+    .replace(/&#x2F;/g, '/')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'");
 }; 
