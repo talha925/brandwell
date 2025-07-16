@@ -45,6 +45,10 @@ const BlogForm = () => {
   const [isFeatured, setIsFeatured] = useState(false);
   const [tags, setTags] = useState('');
 
+  // Image Upload States
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUploadMessage, setImageUploadMessage] = useState('');
+
   // SEO Metadata Fields
   const [metaTitle, setMetaTitle] = useState('');
   const [metaDescription, setMetaDescription] = useState('');
@@ -65,6 +69,14 @@ const BlogForm = () => {
 
   // Validation States
   const [errors, setErrors] = useState<BlogValidationErrors>({});
+
+  // Image Upload Handlers
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+      setImageUploadMessage('');
+    }
+  };
 
   // Fetch Blog Categories from API
   useEffect(() => {
@@ -240,12 +252,43 @@ const BlogForm = () => {
       return;
     }
 
+    // Handle image upload if there's a selected file but no imageUrl
+    let finalImageUrl = imageUrl;
+    if (imageFile && !imageUrl.trim()) {
+      try {
+        setMessage('Uploading image...');
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        const uploadResponse = await fetch('https://coupon-app-backend.vercel.app/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error(`Image upload failed: ${uploadResponse.status}`);
+        }
+
+        const uploadData = await uploadResponse.json();
+        finalImageUrl = uploadData.imageUrl;
+        setImageUrl(uploadData.imageUrl); // Update state with uploaded URL
+        setImageFile(null); // Clear the file input
+        setMessage('Image uploaded successfully! Proceeding with blog creation...');
+      } catch (uploadError) {
+        console.error('Error uploading image:', uploadError);
+        setMessage('Failed to upload image. Please try uploading the image again or provide an image URL.');
+        setLoading(false);
+        return;
+      }
+    }
+
     // Process tags
     const processedTags = processTags(tags);
 
     // Sanitize the HTML content from TinyMCE
     const sanitizedLongDescription = sanitizeHtml(longDescription);
 
+    // Build the blog data object
     const blogData = {
       title: title.trim(),
       shortDescription: shortDescription.trim(),
@@ -267,10 +310,13 @@ const BlogForm = () => {
       },
       status,
       isFeaturedForHome: isFeatured,
-      image: imageUrl.trim() ? { 
-        url: imageUrl.trim(), 
-        alt: imageAlt.trim() || title.trim() 
-      } : undefined,
+      // Only include image if we have a valid image URL
+      ...(finalImageUrl && finalImageUrl.trim() && {
+        image: {
+          url: finalImageUrl.trim(),
+          alt: imageAlt.trim() || title.trim()
+        }
+      }),
       tags: processedTags.length > 0 ? processedTags : undefined,
       // SEO Metadata
       meta: {
@@ -312,6 +358,7 @@ const BlogForm = () => {
     setImageUrl('');
     setImageAlt('');
     setTags('');
+    setImageFile(null);
     // Reset SEO metadata
     setMetaTitle('');
     setMetaDescription('');
@@ -421,14 +468,14 @@ const BlogForm = () => {
             />
 
             <div>
-              <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
                 Status <span className="text-red-500">*</span>
               </label>
               <select
                 id="status"
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
               >
                 {BLOG_STATUS_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -466,10 +513,41 @@ const BlogForm = () => {
             />
           </div>
 
+          {/* Image Upload Section */}
+          <div className="space-y-4 mb-6">
+            <label className="block text-sm font-medium text-gray-700 cursor-pointer">Upload Image (Optional)</label>
+            <div className="text-xs text-gray-500 mb-2">
+              Select an image file to upload. The image will be uploaded automatically when you submit the blog post.
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer file:cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+
+            {imageFile && (
+              <div className="text-sm text-green-600 mt-1">
+                ✓ Selected: {imageFile.name} (will be uploaded when you submit the blog)
+              </div>
+            )}
+
+            {imageUrl && (
+              <div className="mt-4">
+                <div className="text-sm text-gray-600 mb-2">Image Preview:</div>
+                <img 
+                  src={imageUrl} 
+                  alt="Uploaded preview" 
+                  className="rounded-lg w-full max-w-md h-auto border border-gray-300" 
+                />
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <FormField
               id="imageUrl"
-              label="Image URL"
+              label="Image URL (Alternative to upload above)"
               type="url"
               value={imageUrl}
               onChange={setImageUrl}
@@ -502,9 +580,9 @@ const BlogForm = () => {
               type="checkbox"
               checked={isFeatured}
               onChange={(e) => setIsFeatured(e.target.checked)}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
             />
-            <label htmlFor="isFeatured" className="ml-2 text-sm font-medium text-gray-700">
+            <label htmlFor="isFeatured" className="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
               Featured for Home
             </label>
           </div>
@@ -533,7 +611,7 @@ const BlogForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className="px-8 py-3 bg-green-600 text-white rounded-lg text-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-300"
+            className="px-8 py-3 bg-green-600 text-white rounded-lg text-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-300 cursor-pointer disabled:cursor-not-allowed"
           >
             {loading ? 'Creating...' : 'Create Blog Post'}
           </button>

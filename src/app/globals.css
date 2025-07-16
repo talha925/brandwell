@@ -23,7 +23,64 @@ body {
   clip-path: polygon(20% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
+/* Global cursor styles for better UX */
 @layer base {
+  /* Ensure proper cursor behavior for interactive elements */
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  input[type="button"]:not(:disabled),
+  input[type="submit"]:not(:disabled),
+  input[type="reset"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  /* Disabled elements should show not-allowed cursor */
+  button:disabled,
+  [role="button"]:disabled,
+  input:disabled,
+  select:disabled,
+  textarea:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Text inputs should show text cursor */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="url"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="number"],
+  textarea {
+    cursor: text;
+  }
+
+  /* File inputs should show pointer cursor */
+  input[type="file"] {
+    cursor: pointer;
+  }
+
+  /* Select elements should show pointer cursor */
+  select {
+    cursor: pointer;
+  }
+
+  /* Labels should show pointer cursor */
+  label {
+    cursor: pointer;
+  }
+
+  /* Checkboxes and radio buttons should show pointer cursor */
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
+
+  /* Links should show pointer cursor */
+  a {
+    cursor: pointer;
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
