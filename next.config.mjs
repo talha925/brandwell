@@ -6,6 +6,11 @@ const nextConfig = {
           protocol: "https",
           hostname: "coupon-app-image.s3.us-east-1.amazonaws.com",
         },
+        {
+          protocol: "https",
+          hostname: "cdn.pixabay.com",
+        },
+        // Add more hostnames here if your blogs use other image sources
       ],
     },
   };

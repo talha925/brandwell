@@ -23,41 +23,70 @@ import {
 import { processTags } from '@/lib/utils/formatting';
 import { BLOG_STATUS_OPTIONS } from '@/lib/constants/options';
 
-const BlogForm = () => {
+interface BlogFormProps {
+  initialValues?: Partial<{
+    _id: string;
+    title: string;
+    shortDescription: string;
+    longDescription: string;
+    categoryId: string;
+    storeId: string;
+    storeUrl: string;
+    authorName: string;
+    authorEmail: string;
+    authorAvatar: string;
+    status: string;
+    isFeatured: boolean;
+    imageUrl: string;
+    imageAlt: string;
+    tags: string;
+    metaTitle: string;
+    metaDescription: string;
+    metaKeywords: string;
+    metaCanonicalUrl: string;
+    metaRobots: string;
+    faqs: Array<{ question: string; answer: string }>;
+  }>;
+  onSubmit?: (data: any, resetForm: () => void, setLoading: (b: boolean) => void, setMessage: (msg: string) => void, setErrors: (e: any) => void) => Promise<void>;
+  submitLabel?: string;
+  loadingOverride?: boolean;
+}
+
+const BlogForm = ({ initialValues, onSubmit, submitLabel, loadingOverride }: BlogFormProps = {}) => {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
   
   // Required Fields
-  const [title, setTitle] = useState('');
-  const [shortDescription, setShortDescription] = useState('');
-  const [longDescription, setLongDescription] = useState('');
-  const [categoryId, setCategoryId] = useState('');
-  const [storeId, setStoreId] = useState('');
-  const [storeUrl, setStoreUrl] = useState('');
-  const [authorName, setAuthorName] = useState('');
-  const [status, setStatus] = useState('draft');
+  const [title, setTitle] = useState(initialValues?.title || '');
+  const [shortDescription, setShortDescription] = useState(initialValues?.shortDescription || '');
+  const [longDescription, setLongDescription] = useState(initialValues?.longDescription || '');
+  const [categoryId, setCategoryId] = useState(initialValues?.categoryId || '');
+  const [storeId, setStoreId] = useState(initialValues?.storeId || '');
+  const [storeUrl, setStoreUrl] = useState(initialValues?.storeUrl || '');
+  const [authorName, setAuthorName] = useState(initialValues?.authorName || '');
+  const [status, setStatus] = useState(initialValues?.status || 'draft');
 
   // Optional Fields
-  const [authorEmail, setAuthorEmail] = useState('');
-  const [authorAvatar, setAuthorAvatar] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [imageAlt, setImageAlt] = useState('');
-  const [isFeatured, setIsFeatured] = useState(false);
-  const [tags, setTags] = useState('');
+  const [authorEmail, setAuthorEmail] = useState(initialValues?.authorEmail || '');
+  const [authorAvatar, setAuthorAvatar] = useState(initialValues?.authorAvatar || '');
+  const [imageUrl, setImageUrl] = useState(initialValues?.imageUrl || '');
+  const [imageAlt, setImageAlt] = useState(initialValues?.imageAlt || '');
+  const [isFeatured, setIsFeatured] = useState(initialValues?.isFeatured || false);
+  const [tags, setTags] = useState(initialValues?.tags || '');
 
   // Image Upload States
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUploadMessage, setImageUploadMessage] = useState('');
 
   // SEO Metadata Fields
-  const [metaTitle, setMetaTitle] = useState('');
-  const [metaDescription, setMetaDescription] = useState('');
-  const [metaKeywords, setMetaKeywords] = useState('');
-  const [metaCanonicalUrl, setMetaCanonicalUrl] = useState('');
-  const [metaRobots, setMetaRobots] = useState('index,follow');
+  const [metaTitle, setMetaTitle] = useState(initialValues?.metaTitle || '');
+  const [metaDescription, setMetaDescription] = useState(initialValues?.metaDescription || '');
+  const [metaKeywords, setMetaKeywords] = useState(initialValues?.metaKeywords || '');
+  const [metaCanonicalUrl, setMetaCanonicalUrl] = useState(initialValues?.metaCanonicalUrl || '');
+  const [metaRobots, setMetaRobots] = useState(initialValues?.metaRobots || 'index,follow');
 
-  // FAQs Section
-  const [faqs, setFaqs] = useState<Array<{ question: string; answer: string }>>([]);
+  // FAQs Section (only declare once, with initialValues support)
+  const [faqs, setFaqs] = useState<Array<{ question: string; answer: string }>>(initialValues?.faqs || []);
 
   // Form State
   const [loading, setLoading] = useState(false);
@@ -322,13 +351,19 @@ const BlogForm = () => {
       meta: {
         title: metaTitle.trim() || undefined,
         description: metaDescription.trim() || undefined,
-        keywords: metaKeywords.trim() || undefined,
+        keywords: typeof metaKeywords === 'string' ? metaKeywords.split(',').map(k => k.trim()).filter(Boolean) : undefined,
         canonicalUrl: metaCanonicalUrl.trim() || undefined,
         robots: metaRobots.trim() || 'index,follow',
       },
       // FAQs
       faqs: faqs.length > 0 ? faqs : undefined,
     };
+
+    if (onSubmit) {
+      await onSubmit(blogData, resetForm, setLoading, setMessage, setErrors);
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await api.post('/api/create-blog', blogData);

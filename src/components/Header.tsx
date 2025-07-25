@@ -45,20 +45,7 @@ export default function Header() {
                 <Link href="/blog">BLOG</Link>
               </li>
               {isAuthenticated && (
-                <>
-                  <li className="px-4 py-2 hover:bg-gray-100 text-blue-600">
-                    <Link href="/blog/create">CREATE BLOG</Link>
-                  </li>
-                  <li className="px-4 py-2 hover:bg-gray-100 text-red-600">
-                    <button 
-                      onClick={logout} 
-                      className="flex items-center"
-                      disabled={isLoading}
-                    >
-                      <LogOut size={16} className="mr-1" /> {isLoading ? 'LOGGING OUT...' : 'LOGOUT'}
-                    </button>
-                  </li>
-                </>
+                <></>
               )}
             </ul>
           </SheetContent>
@@ -86,23 +73,7 @@ export default function Header() {
         </div>
         
         {isAuthenticated && (
-          <>
-            <div className="relative">
-              <Link href="/blog/create" className="hover:text-orange-500">
-                CREATE BLOG
-              </Link>
-            </div>
-            <div className="flex items-center">
-              <span className="mr-2 text-gray-600">Hi, {user?.name || 'User'}</span>
-              <button 
-                onClick={logout}
-                className="flex items-center text-red-600 hover:text-red-800"
-                disabled={isLoading}
-              >
-                <LogOut size={16} className="mr-1" /> {isLoading ? 'LOGGING OUT...' : 'LOGOUT'}
-              </button>
-            </div>
-          </>
+          <></>
         )}
       </nav>
       <div className="flex flex-1 ">

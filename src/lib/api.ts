@@ -56,6 +56,7 @@ class ApiClient {
       ...options,
       method: 'GET',
       headers,
+      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -77,6 +78,7 @@ class ApiClient {
       method: 'POST',
       headers,
       body: JSON.stringify(data),
+      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -98,6 +100,7 @@ class ApiClient {
       method: 'PUT',
       headers,
       body: JSON.stringify(data),
+      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -118,6 +121,7 @@ class ApiClient {
       ...options,
       method: 'DELETE',
       headers,
+      cache: 'no-store',
     });
 
     if (!response.ok) {
