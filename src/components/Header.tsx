@@ -2,13 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, Bell } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/context/AuthContext";
+import { useApp } from "@/context/AppContext";
 import { usePathname } from "next/navigation";
+import ThemeToggle from "@/components/ui/ThemeToggle";
+import NotificationToast from "@/components/ui/NotificationToast";
 
 export default function Header() {
   const { user, isAuthenticated, logout, isLoading } = useAuth();
+  const { state } = useApp();
   const pathname = usePathname();
 
   // Hide header on all /admin routes
@@ -75,13 +79,45 @@ export default function Header() {
         </div>
         {isAuthenticated && <></>}
       </nav>
-      <div className="flex flex-1 ">
+      <div className="flex flex-1 items-center justify-end space-x-4">
         <input
           type="text"
           placeholder="Find Coupons & Stores"
           className="border rounded-lg px-4 py-3 w-80"
         />
+        
+        {/* Theme Toggle */}
+        <ThemeToggle />
+        
+        {/* Notification Bell */}
+        <button className="relative p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
+          <Bell className="w-5 h-5" />
+          {state.notifications.length > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              {state.notifications.length}
+            </span>
+          )}
+        </button>
+        
+        {/* User Menu */}
+        {isAuthenticated && (
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-700 dark:text-gray-300">
+              Welcome, {user?.name}
+            </span>
+            <button
+              onClick={logout}
+              className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="text-sm">Logout</span>
+            </button>
+          </div>
+        )}
       </div>
+      
+      {/* Notification Toast */}
+      <NotificationToast />
     </header>
   );
 }

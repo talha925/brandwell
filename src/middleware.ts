@@ -17,9 +17,23 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get('authToken')?.value;
   const { pathname } = req.nextUrl;
 
-  const protectedRoutes = ['/blog/create'];
+  // Define protected routes
+  const protectedRoutes = [
+    '/blog/create',
+    '/admin',
+    '/blog/edit',
+  ];
 
-  if (protectedRoutes.some(route => pathname.startsWith(route))) {
+  // Define admin-only routes
+  const adminRoutes = [
+    '/admin',
+  ];
+
+  // Check if the current path is protected
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
+
+  if (isProtectedRoute) {
     if (!token) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
@@ -31,6 +45,11 @@ export async function middleware(req: NextRequest) {
       const response = NextResponse.redirect(new URL('/login', req.url));
       response.cookies.delete('authToken');
       return response;
+    }
+
+    // Check admin permissions for admin routes
+    if (isAdminRoute && payload.role !== 'admin') {
+      return NextResponse.redirect(new URL('/', req.url));
     }
   }
 

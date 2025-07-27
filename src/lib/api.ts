@@ -16,17 +16,41 @@ class ApiClient {
   /**
    * Get the authentication token from storage
    */
-  private getAuthToken(): string | null {
+  private async getAuthToken(): Promise<string | null> {
     if (typeof window === 'undefined') {
       return null; // Server-side
     }
-    return localStorage.getItem('authToken');
+    
+    // First try to get from localStorage
+    const localToken = localStorage.getItem('authToken');
+    if (localToken) {
+      return localToken;
+    }
+    
+    // If no local token, try to get from HTTP-only cookie
+    try {
+      const response = await fetch('/api/auth/me', {
+        credentials: 'include',
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+          return data.token;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching auth token:', error);
+    }
+    
+    return null;
   }
 
   /**
    * Add authentication headers to requests
    */
-  private createHeaders(options?: RequestOptions): Headers {
+  private async createHeaders(options?: RequestOptions): Promise<Headers> {
     const headers = new Headers(options?.headers);
     
     // Set default content type if not provided
@@ -36,7 +60,7 @@ class ApiClient {
 
     // Add auth token if available and not skipped
     if (!options?.skipAuth) {
-      const token = this.getAuthToken();
+      const token = await this.getAuthToken();
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
@@ -50,7 +74,7 @@ class ApiClient {
    */
   async get<T = any>(endpoint: string, options?: RequestOptions): Promise<T> {
     const url = this.baseUrl + endpoint;
-    const headers = this.createHeaders(options);
+    const headers = await this.createHeaders(options);
     
     const response = await fetch(url, {
       ...options,
@@ -71,7 +95,7 @@ class ApiClient {
    */
   async post<T = any>(endpoint: string, data: any, options?: RequestOptions): Promise<T> {
     const url = this.baseUrl + endpoint;
-    const headers = this.createHeaders(options);
+    const headers = await this.createHeaders(options);
     
     const response = await fetch(url, {
       ...options,
@@ -93,7 +117,7 @@ class ApiClient {
    */
   async put<T = any>(endpoint: string, data: any, options?: RequestOptions): Promise<T> {
     const url = this.baseUrl + endpoint;
-    const headers = this.createHeaders(options);
+    const headers = await this.createHeaders(options);
     
     const response = await fetch(url, {
       ...options,
@@ -115,7 +139,7 @@ class ApiClient {
    */
   async delete<T = any>(endpoint: string, options?: RequestOptions): Promise<T> {
     const url = this.baseUrl + endpoint;
-    const headers = this.createHeaders(options);
+    const headers = await this.createHeaders(options);
     
     const response = await fetch(url, {
       ...options,
