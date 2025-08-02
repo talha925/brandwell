@@ -1,8 +1,8 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Image from "next/image";
-import { api } from "@/lib/api";
+import { Metadata } from "next";
+import Carousel from "@/components/ui/Carousel";
+import NewsletterSubscription from "@/components/ui/NewsletterSubscription";
+import BlogCard from "@/components/blog/BlogCard";
 
 interface Blog {
   _id: string;
@@ -14,10 +14,40 @@ interface Blog {
   };
 }
 
-export default function Blogs() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [featuredBlogs, setFeaturedBlogs] = useState<Blog[]>([]);
-  const [email, setEmail] = useState('');
+// Define metadata for SEO
+export const metadata: Metadata = {
+  title: 'Featured Blogs | Brandwell',
+  description: 'Discover our featured blogs with the latest trends, tips, and insights across travel, health, lifestyle, and technology.',
+  openGraph: {
+    title: 'Featured Blogs | Brandwell',
+    description: 'Discover our featured blogs with the latest trends, tips, and insights across travel, health, lifestyle, and technology.',
+    images: ['/image/travel1.jpg'],
+  },
+};
+
+// Fetch data at build time or with revalidation
+async function fetchFeaturedBlogs() {
+  try {
+    const res = await fetch('https://coupon-app-backend.vercel.app/api/blogs?featured=true&page=1&pageSize=6', {
+      next: { revalidate: 3600 } // Revalidate every hour
+    });
+    
+    if (!res.ok) throw new Error('Failed to fetch blogs');
+    
+    const data = await res.json();
+    return data.blogs?.blogs || data.data?.blogs || [];
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    return [];
+  }
+}
+
+export default async function Blogs() {
+  // Fetch data server-side
+  const featuredBlogs = await fetchFeaturedBlogs();
+  
+  // These will be client-side state variables
+  // We'll use them with "use client" directives in a client component
   const images = [
     "/image/travel1.jpg",
     "/image/health1.jpg",
@@ -29,72 +59,30 @@ export default function Blogs() {
     "/image/fashion1.jpg",
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % images.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [images.length]);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % images.length);
-  };
-
-  useEffect(() => {
-    api.get('/api/blogs?featured=true&page=1&pageSize=6').then((res) => {
-      // Adjust this according to your API response structure
-      const blogs = res.blogs?.blogs || res.data?.blogs || [];
-      setFeaturedBlogs(blogs);
-    });
-  }, []);
+  // Client-side functionality will be moved to a separate component
 
   return (
     <div className="w-full bg-gray-900">
       {/* Banner: full width, no padding */}
       <section className="relative h-[80vh] overflow-hidden">
-        <div className="relative h-full">
-          <button
-            onClick={() => setCurrentSlide((prev) => (prev - 1 + images.length) % images.length)}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800/80 hover:bg-gray-700/90 text-white w-12 h-12 rounded-full cursor-pointer z-10 flex items-center justify-center transition-all duration-300 backdrop-blur-sm border border-gray-600/50 hover:border-purple-500/50"
-          >
-            ❮
-          </button>
-          <div className="h-full">
-            <div className="relative h-full transition-opacity duration-500">
-              <Image
-                src={images[currentSlide]}
-                alt="Current Image"
-                width={1920}
-                height={1080}
-                className="w-full h-full object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/70 to-gray-900/50">
-                <div className="max-w-7xl mx-auto h-full flex flex-col justify-center px-4 sm:px-6 lg:px-8">
-                  <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-in leading-tight">
-                    Discover the Best Deals, Reviews, and
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"> Lifestyle Tips</span>
-                  </h1>
-                  <p className="text-xl text-gray-300 mb-8 max-w-2xl leading-relaxed">
-                    Your ultimate guide to smart shopping and better living
-                  </p>
-                  <button className="inline-flex items-center px-8 py-4 max-w-[220px] text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25 group">
-                    Explore Now
-                    <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
+        {/* Client component for carousel */}
+        <Carousel images={images} />
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/70 to-gray-900/50">
+          <div className="max-w-7xl mx-auto h-full flex flex-col justify-center px-4 sm:px-6 lg:px-8">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-in leading-tight">
+              Discover the Best Deals, Reviews, and
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"> Lifestyle Tips</span>
+            </h1>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl leading-relaxed">
+              Your ultimate guide to smart shopping and better living
+            </p>
+            <button className="inline-flex items-center px-8 py-4 max-w-[220px] text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25 group">
+              Explore Now
+              <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
-          <button
-            onClick={nextSlide}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800/80 hover:bg-gray-700/90 text-white w-12 h-12 rounded-full cursor-pointer z-10 flex items-center justify-center transition-all duration-300 backdrop-blur-sm border border-gray-600/50 hover:border-purple-500/50"
-          >
-            ❯
-          </button>
         </div>
       </section>
 
@@ -256,40 +244,8 @@ export default function Blogs() {
           {featuredBlogs.length === 0 ? (
             <div className="col-span-3 text-center text-gray-400">No featured blogs found.</div>
           ) : (
-            featuredBlogs.map((blog) => (
-              <div
-                key={blog._id}
-                className="group relative bg-gray-800 rounded-xl overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/20"
-              >
-                {blog.image?.url && (
-                  <div className="relative h-48 overflow-hidden">
-                    <Image
-                      src={blog.image.url}
-                      alt={blog.image.alt || blog.title}
-                      width={800}
-                      height={450}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60" />
-                  </div>
-                )}
-                <div className="p-6">
-                  <div className="flex items-center mb-4">
-                    <span className="px-3 py-1 text-xs font-semibold text-purple-400 bg-purple-900/30 rounded-full">Blog</span>
-                    <span className="ml-2 text-sm text-gray-400">5 min read</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-purple-400 transition-colors">{blog.title}</h3>
-                  <a
-                    href={"/blog/" + (blog.slug || blog._id)}
-                    className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors"
-                  >
-                    Read more
-                    <svg className="w-4 h-4 ml-2 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
+            featuredBlogs.map((blog: Blog) => (
+              <BlogCard key={blog._id} blog={blog} />
             ))
           )}
         </div>
@@ -301,22 +257,7 @@ export default function Blogs() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             {/* Newsletter Signup */}
             <div className="lg:col-span-2">
-              <h3 className="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-                Subscribe to Our Newsletter
-              </h3>
-              <p className="text-gray-400 mb-6 text-lg leading-relaxed">Stay updated with our latest deals and articles</p>
-              <form className="flex gap-3" onSubmit={(e) => { e.preventDefault(); }}>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-white placeholder-gray-400 transition-all duration-300"
-                />
-                <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold hover:opacity-90 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-purple-500/25">
-                  Subscribe
-                </button>
-              </form>
+              <NewsletterSubscription />
             </div>
 
             {/* Quick Links */}
